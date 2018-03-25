@@ -21,10 +21,11 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD get.
 
-    DATA: ls_repo    TYPE zif_abapgit_persistence=>ty_repo,
-          lv_string  TYPE string,
+    DATA: lv_string  TYPE string,
           li_handler TYPE REF TO if_adt_rest_content_handler.
 
+
+    li_handler = cl_adt_rest_st_handler=>create_instance( c_transformation ).
 
     request->get_uri_attribute(
       EXPORTING
@@ -33,14 +34,21 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
       IMPORTING
         value     = lv_string ).
 
-* todo, load data into LS_REPO
-    ls_repo-key = lv_string.
+    IF NOT lv_string IS INITIAL.
+      DATA(ls_repo) = NEW zcl_abapgit_persistence_repo( )->read( |{ lv_string ALPHA = IN }| ).
 
-    li_handler = cl_adt_rest_st_handler=>create_instance( c_transformation ).
+      response->set_body_data(
+        content_handler = li_handler
+        data            = ls_repo ).
+    ELSE.
+      DATA(lt_repos) = NEW zcl_abapgit_persistence_repo( )->list( ).
 
-    response->set_body_data(
-      content_handler = li_handler
-      data            = ls_repo ).
+      response->set_body_data(
+        content_handler = li_handler
+        data            = lt_repos ).
+    ENDIF.
+
+* todo, catch exception
 
   ENDMETHOD.
 ENDCLASS.
