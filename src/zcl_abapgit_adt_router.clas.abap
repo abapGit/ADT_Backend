@@ -28,11 +28,11 @@ CLASS ZCL_ABAPGIT_ADT_ROUTER IMPLEMENTATION.
   METHOD register_resources.
 
     registry->register_discoverable_resource(
-       url             = '/abapgit/repos'
-       handler_class   = 'ZCL_ABAPGIT_ADT'
-       description     = 'abapGit'
-       category_scheme = 'http://www.abapgit.org/adt/categories/abapgit'
-       category_term   = 'services' ).
+      url             = '/abapgit/repos'
+      handler_class   = 'ZCL_ABAPGIT_ADT'
+      description     = 'abapGit'
+      category_scheme = 'http://www.abapgit.org/adt/categories/abapgit'
+      category_term   = 'services' ).
 
     registry->register_resource(
       template      = |/abapgit/repos/\{{ zcl_abapgit_adt=>c_uri_key }\}|
