@@ -54,7 +54,7 @@ CLASS ZCL_ABAPGIT_ADT_TEST IMPLEMENTATION.
       message_body = string_to_xstring_utf8( iv_body ) ).
 
     CALL FUNCTION 'SADT_REST_RFC_ENDPOINT'
-*      DESTINATION 'NONE'
+      DESTINATION 'NONE'
       EXPORTING
         request  = ls_request
       IMPORTING

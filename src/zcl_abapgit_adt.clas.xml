@@ -21,6 +21,12 @@
      <LANGU>E</LANGU>
      <DESCRIPT>Name of an XSLT Program</DESCRIPT>
     </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_ABAPGIT_ADT</CLSNAME>
+     <CMPNAME>MI_RESPONSE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>ADT Access to REST Response</DESCRIPT>
+    </SEOCOMPOTX>
    </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
