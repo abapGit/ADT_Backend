@@ -1,7 +1,7 @@
 *"* use this source file for your ABAP unit test classes
 
 CLASS ltcl_test DEFINITION INHERITING FROM zcl_abapgit_adt_test FOR TESTING
-    RISK LEVEL HARMLESS DURATION SHORT.
+    RISK LEVEL HARMLESS DURATION SHORT FINAL.
 * todo, change RISK LEVEL?
 
   PUBLIC SECTION.
@@ -11,6 +11,8 @@ CLASS ltcl_test DEFINITION INHERITING FROM zcl_abapgit_adt_test FOR TESTING
 
     METHODS:
       create_repo
+        IMPORTING
+          is_create     TYPE zcl_abapgit_adt=>ty_create_repository
         RETURNING
           VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key,
       delete_repo
@@ -21,26 +23,54 @@ CLASS ltcl_test DEFINITION INHERITING FROM zcl_abapgit_adt_test FOR TESTING
           is_response TYPE ty_response,
       read_repo
         IMPORTING
-          iv_key        TYPE zif_abapgit_persistence=>ty_repo-key
-        RETURNING
-          VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key,
+          iv_key TYPE zif_abapgit_persistence=>ty_repo-key,
       repo_status
         IMPORTING
-          iv_key        TYPE zif_abapgit_persistence=>ty_repo-key
+          iv_key TYPE zif_abapgit_persistence=>ty_repo-key,
+      repo_pull_checks
+        IMPORTING
+          iv_key           TYPE zif_abapgit_persistence=>ty_repo-key
         RETURNING
-          VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key,
+          VALUE(rs_checks) TYPE zif_abapgit_definitions=>ty_deserialize_checks,
       repo_pull
         IMPORTING
-          iv_key        TYPE zif_abapgit_persistence=>ty_repo-key
-        RETURNING
-          VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key.
+          iv_key    TYPE zif_abapgit_persistence=>ty_repo-key
+          is_checks TYPE zif_abapgit_definitions=>ty_deserialize_checks.
 
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
 
   METHOD scenario01.
-    delete_repo( repo_pull( repo_status( read_repo( create_repo( ) ) ) ) ).
+    DATA(lv_key) = create_repo( VALUE zcl_abapgit_adt=>ty_create_repository(
+      url         = 'https://github.com/larshp/DOMA.git'
+      branch_name = 'refs/heads/master'
+      package     = '$ONLINE' ) ).
+
+    read_repo( lv_key ).
+
+    repo_status( lv_key ).
+
+    DATA(ls_checks) = repo_pull_checks( lv_key ).
+
+    LOOP AT ls_checks-overwrite ASSIGNING FIELD-SYMBOL(<ls_overwrite>).
+      <ls_overwrite>-decision = 'Y'.
+    ENDLOOP.
+
+    repo_pull( iv_key    = lv_key
+               is_checks = ls_checks ).
+
+    delete_repo( lv_key ).
+  ENDMETHOD.
+
+  METHOD repo_pull_checks.
+
+    DATA(ls_response) = get( c_prefix && 'repos/' && iv_key && '/pull_checks' ).
+
+    check_response( ls_response ).
+
+    CALL TRANSFORMATION id SOURCE XML ls_response-body RESULT root = rs_checks.
+
   ENDMETHOD.
 
   METHOD check_response.
@@ -58,12 +88,7 @@ CLASS ltcl_test IMPLEMENTATION.
           ls_repo TYPE zif_abapgit_persistence=>ty_repo.
 
 
-    DATA(ls_create) = VALUE zcl_abapgit_adt=>ty_create_repository(
-      url         = 'https://github.com/larshp/DOMA.git'
-      branch_name = 'refs/heads/master'
-      package     = '$ONLINE' ).
-
-    CALL TRANSFORMATION id SOURCE root = ls_create RESULT XML lv_body.
+    CALL TRANSFORMATION id SOURCE root = is_create RESULT XML lv_body.
 
     DATA(ls_response) = post(
       iv_uri  = c_prefix && 'repos'
@@ -93,8 +118,6 @@ CLASS ltcl_test IMPLEMENTATION.
       act = ls_repo-key
       exp = iv_key ).
 
-    rv_key = iv_key.
-
   ENDMETHOD.
 
   METHOD delete_repo.
@@ -118,20 +141,20 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_not_initial( lt_status ).
 
-    rv_key = iv_key.
-
   ENDMETHOD.
 
   METHOD repo_pull.
 
-    DATA: lt_status TYPE zif_abapgit_definitions=>ty_results_tt.
+    DATA: lv_body TYPE string.
 
 
-    DATA(ls_response) = post( c_prefix && 'repos/' && iv_key && '/pull' ).
+    CALL TRANSFORMATION id SOURCE root = is_checks RESULT XML lv_body.
+
+    DATA(ls_response) = post(
+      iv_uri  = c_prefix && 'repos/' && iv_key && '/pull'
+      iv_body = lv_body ).
 
     check_response( ls_response ).
-
-    rv_key = iv_key.
 
   ENDMETHOD.
 

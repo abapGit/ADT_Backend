@@ -127,7 +127,7 @@ CLASS ZCL_ABAPGIT_ADT_TEST IMPLEMENTATION.
       EXCEPTIONS
         OTHERS   = 1.
     IF sy-subrc <> 0.
-      ASSERT 0 = 1.
+      cl_abap_unit_assert=>fail( ).
     ENDIF.
 
     rs_response = VALUE #(
@@ -137,7 +137,7 @@ CLASS ZCL_ABAPGIT_ADT_TEST IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD STRING_TO_XSTRING_UTF8.
+  METHOD string_to_xstring_utf8.
 
     DATA: lo_obj TYPE REF TO cl_abap_conv_out_ce.
 
@@ -152,13 +152,13 @@ CLASS ZCL_ABAPGIT_ADT_TEST IMPLEMENTATION.
             cx_sy_codepage_converter_init
             cx_sy_conversion_codepage
             cx_parameter_invalid_type.
-        ASSERT 1 = 2.
+        cl_abap_unit_assert=>fail( ).
     ENDTRY.
 
   ENDMETHOD.
 
 
-  METHOD XSTRING_TO_STRING_UTF8.
+  METHOD xstring_to_string_utf8.
 
     DATA: lv_len TYPE i,
           lo_obj TYPE REF TO cl_abap_conv_in_ce.
@@ -167,7 +167,6 @@ CLASS ZCL_ABAPGIT_ADT_TEST IMPLEMENTATION.
     TRY.
         lo_obj = cl_abap_conv_in_ce=>create(
             input    = iv_data
-*            ignore_cerr = abap_true
             encoding = 'UTF-8' ).
         lv_len = xstrlen( iv_data ).
 
@@ -178,7 +177,7 @@ CLASS ZCL_ABAPGIT_ADT_TEST IMPLEMENTATION.
             cx_sy_codepage_converter_init
             cx_sy_conversion_codepage
             cx_parameter_invalid_type.
-        ASSERT 1 = 2.
+        cl_abap_unit_assert=>fail( ).
     ENDTRY.
 
   ENDMETHOD.

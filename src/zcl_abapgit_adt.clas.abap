@@ -23,14 +23,13 @@ CLASS zcl_abapgit_adt DEFINITION
         REDEFINITION .
     METHODS put
         REDEFINITION .
-protected section.
+  PROTECTED SECTION.
 private section.
 
   data MI_RESPONSE type ref to IF_ADT_REST_RESPONSE .
+  data MI_REQUEST type ref to IF_ADT_REST_REQUEST .
 
   methods CREATE_REPOSITORY
-    importing
-      !IS_CREATE type TY_CREATE_REPOSITORY
     raising
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST
@@ -40,8 +39,6 @@ private section.
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST .
   methods DELETE_REPOSITORY
-    importing
-      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
     raising
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST
@@ -54,6 +51,11 @@ private section.
       CX_ADT_REST
       ZCX_ABAPGIT_NOT_FOUND .
   methods REPOSITORY_PULL
+    raising
+      ZCX_ABAPGIT_EXCEPTION
+      CX_ADT_REST
+      ZCX_ABAPGIT_NOT_FOUND .
+  methods REPOSITORY_PULL_CHECKS
     importing
       !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
     raising
@@ -87,10 +89,19 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD create_repository.
 
+    DATA: ls_create TYPE ty_create_repository.
+
+
+    mi_request->get_body_data(
+      EXPORTING
+        content_handler = cl_adt_rest_st_handler=>create_instance( c_transformation )
+      IMPORTING
+        data            = ls_create ).
+
     DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->new_online(
-      iv_url         = is_create-url
-      iv_branch_name = is_create-branch_name
-      iv_package     = is_create-package ).
+      iv_url         = ls_create-url
+      iv_branch_name = ls_create-branch_name
+      iv_package     = ls_create-package ).
 
     read_repository( lo_repo->get_key( ) ).
 
@@ -99,25 +110,15 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD delete.
 
-    DATA: lv_string TYPE string.
-
-
     mi_response = response.
-
-* todo, use CONTEXT instead?
-    request->get_uri_attribute(
-      EXPORTING
-        name      = c_uri_key
-        mandatory = abap_false
-      IMPORTING
-        value     = lv_string ).
+    mi_request = request.
 
     TRY.
-        delete_repository( |{ lv_string ALPHA = IN }| ).
+        delete_repository( ).
       CATCH zcx_abapgit_exception INTO DATA(lx_error).
         set_error( lx_error ).
       CATCH zcx_abapgit_not_found INTO DATA(lx_not_found).
-        set_error( iv_status = 404
+        set_error( iv_status  = 404
                    ii_message = lx_not_found ).
     ENDTRY.
 
@@ -126,7 +127,18 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD delete_repository.
 
-    zcl_abapgit_repo_srv=>get_instance( )->get( iv_key )->delete( ).
+    DATA: lv_string TYPE string.
+
+
+* todo, use CONTEXT instead?
+    mi_request->get_uri_attribute(
+      EXPORTING
+        name      = c_uri_key
+        mandatory = abap_false
+      IMPORTING
+        value     = lv_string ).
+
+    zcl_abapgit_repo_srv=>get_instance( )->get( |{ lv_string ALPHA = IN }| )->delete( ).
 
   ENDMETHOD.
 
@@ -137,6 +149,7 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
 
     mi_response = response.
+    mi_request = request.
 
 * todo, use CONTEXT instead?
     request->get_uri_attribute(
@@ -151,6 +164,8 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
     TRY.
         IF lv_path CP '*/status'.
           repository_status( |{ lv_string ALPHA = IN }| ).
+        ELSEIF lv_path CP '*/pull_checks'.
+          repository_pull_checks( |{ lv_string ALPHA = IN }| ).
         ELSEIF NOT lv_string IS INITIAL.
           read_repository( |{ lv_string ALPHA = IN }| ).
         ELSE.
@@ -159,7 +174,7 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
       CATCH zcx_abapgit_exception INTO DATA(lx_error).
         set_error( lx_error ).
       CATCH zcx_abapgit_not_found INTO DATA(lx_not_found).
-        set_error( iv_status = 404
+        set_error( iv_status  = 404
                    ii_message = lx_not_found ).
     ENDTRY.
 
@@ -180,35 +195,22 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD post.
 
-    DATA: ls_create TYPE ty_create_repository,
-          lv_string TYPE string.
-
-
     mi_response = response.
-
-* todo, use CONTEXT instead?
-    request->get_uri_attribute(
-      EXPORTING
-        name      = c_uri_key
-        mandatory = abap_false
-      IMPORTING
-        value     = lv_string ).
+    mi_request = request.
 
     DATA(lv_path) = request->get_inner_rest_request( )->get_uri_path( ).
 
     TRY.
         IF lv_path CP '*/pull'.
-          repository_pull( |{ lv_string ALPHA = IN }| ).
+          repository_pull( ).
         ELSE.
-          request->get_body_data(
-            EXPORTING
-              content_handler = cl_adt_rest_st_handler=>create_instance( c_transformation )
-            IMPORTING
-              data            = ls_create ).
-          create_repository( ls_create ).
+          create_repository( ).
         ENDIF.
       CATCH zcx_abapgit_exception INTO DATA(lx_error).
         set_error( lx_error ).
+      CATCH zcx_abapgit_not_found INTO DATA(lx_not_found).
+        set_error( iv_status  = 404
+                   ii_message = lx_not_found ).
     ENDTRY.
 
   ENDMETHOD.
@@ -217,6 +219,7 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
   METHOD put.
 
     mi_response = response.
+    mi_request = request.
 
 * todo
 
@@ -240,7 +243,34 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD repository_pull.
 
-    zcl_abapgit_repo_srv=>get_instance( )->get( iv_key )->deserialize( ).
+    DATA: lv_string TYPE string,
+          ls_checks TYPE zif_abapgit_definitions=>ty_deserialize_checks.
+
+
+* todo, use CONTEXT instead?
+    mi_request->get_uri_attribute(
+      EXPORTING
+        name      = c_uri_key
+        mandatory = abap_false
+      IMPORTING
+        value     = lv_string ).
+
+    mi_request->get_body_data(
+      EXPORTING
+        content_handler = cl_adt_rest_st_handler=>create_instance( c_transformation )
+      IMPORTING
+        data            = ls_checks ).
+
+    zcl_abapgit_repo_srv=>get_instance( )->get( |{ lv_string ALPHA = IN }| )->deserialize( ls_checks ).
+
+  ENDMETHOD.
+
+
+  METHOD repository_pull_checks.
+
+    DATA(ls_checks) = zcl_abapgit_repo_srv=>get_instance( )->get( iv_key )->deserialize_checks( ).
+
+    set_body( ls_checks ).
 
   ENDMETHOD.
 
