@@ -39,6 +39,13 @@ private section.
     raising
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST .
+  methods DELETE_REPOSITORY
+    importing
+      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
+    raising
+      ZCX_ABAPGIT_EXCEPTION
+      CX_ADT_REST
+      ZCX_ABAPGIT_NOT_FOUND .
   methods READ_REPOSITORY
     importing
       !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
@@ -78,13 +85,34 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD delete.
 
+    DATA: lv_string TYPE string.
+
     mi_response = response.
 
-* todo
 
-*      CATCH zcx_abapgit_exception zcx_abapgit_not_found INTO DATA(lx_error).
-*        set_error( lx_error ).
-*    ENDTRY.
+* todo, use CONTEXT instead?
+    request->get_uri_attribute(
+      EXPORTING
+        name      = c_uri_key
+        mandatory = abap_false
+      IMPORTING
+        value     = lv_string ).
+
+    TRY.
+        delete_repository( |{ lv_string ALPHA = IN }| ).
+      CATCH zcx_abapgit_exception INTO DATA(lx_error).
+        set_error( lx_error ).
+      CATCH zcx_abapgit_not_found INTO DATA(lx_not_found).
+        set_error( iv_status = 404
+                   ii_message = lx_not_found ).
+    ENDTRY.
+
+  ENDMETHOD.
+
+
+  METHOD delete_repository.
+
+    zcl_abapgit_repo_srv=>get_instance( )->get( iv_key )->delete( ).
 
   ENDMETHOD.
 

@@ -7,6 +7,7 @@ class ZCL_ABAPGIT_ADT_TEST definition
   risk level harmless .
 
 public section.
+protected section.
 
   types:
     BEGIN OF ty_response,
@@ -14,15 +15,39 @@ public section.
            body   TYPE string,
          END OF ty_response .
 
+  methods GET
+    importing
+      !IV_URI type STRING
+      !IV_BODY type STRING optional
+    returning
+      value(RS_RESPONSE) type TY_RESPONSE .
+  methods PUT
+    importing
+      !IV_URI type STRING
+      !IV_BODY type STRING optional
+    returning
+      value(RS_RESPONSE) type TY_RESPONSE .
   methods POST
     importing
       !IV_URI type STRING
       !IV_BODY type STRING optional
     returning
       value(RS_RESPONSE) type TY_RESPONSE .
-protected section.
+  methods DELETE
+    importing
+      !IV_URI type STRING
+      !IV_BODY type STRING optional
+    returning
+      value(RS_RESPONSE) type TY_RESPONSE .
 private section.
 
+  methods REQUEST
+    importing
+      !IV_URI type STRING
+      !IV_BODY type STRING
+      !IV_METHOD type STRING
+    returning
+      value(RS_RESPONSE) type TY_RESPONSE .
   class-methods XSTRING_TO_STRING_UTF8
     importing
       !IV_DATA type XSTRING
@@ -40,14 +65,54 @@ ENDCLASS.
 CLASS ZCL_ABAPGIT_ADT_TEST IMPLEMENTATION.
 
 
+  METHOD delete.
+
+    rs_response = request(
+      iv_uri    = iv_uri
+      iv_body   = iv_body
+      iv_method = 'DELETE' ).
+
+  ENDMETHOD.
+
+
+  METHOD get.
+
+    rs_response = request(
+      iv_uri    = iv_uri
+      iv_body   = iv_body
+      iv_method = 'GET' ).
+
+  ENDMETHOD.
+
+
   METHOD post.
+
+    rs_response = request(
+      iv_uri    = iv_uri
+      iv_body   = iv_body
+      iv_method = 'POST' ).
+
+  ENDMETHOD.
+
+
+  METHOD put.
+
+    rs_response = request(
+      iv_uri    = iv_uri
+      iv_body   = iv_body
+      iv_method = 'PUT' ).
+
+  ENDMETHOD.
+
+
+  METHOD request.
 
     DATA: ls_response TYPE sadt_rest_response.
 
 
     DATA(ls_request) = VALUE sadt_rest_request(
       request_line = VALUE #(
-        method  = 'POST'
+        method  = iv_method
         uri     = iv_uri
         version = 'HTTP1/1' )
       header_fields = VALUE #( )

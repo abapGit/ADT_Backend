@@ -2,15 +2,47 @@
 
 CLASS ltcl_test DEFINITION INHERITING FROM zcl_abapgit_adt_test FOR TESTING
     RISK LEVEL HARMLESS DURATION SHORT.
+* todo, change RISK LEVEL?
 
   PUBLIC SECTION.
-    METHODS: create FOR TESTING.
+    METHODS: scenario01 FOR TESTING.
+
+    CONSTANTS: c_prefix TYPE string VALUE '/sap/bc/adt/abapgit/'.
+
+    METHODS:
+      create_repo
+        RETURNING
+          VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key,
+      delete_repo
+        IMPORTING
+          iv_key TYPE zif_abapgit_persistence=>ty_repo-key,
+      check_response
+        IMPORTING
+          is_response TYPE ty_response,
+      read_repo
+        IMPORTING
+          iv_key        TYPE zif_abapgit_persistence=>ty_repo-key
+        RETURNING
+          VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key.
 
 ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
 
-  METHOD create.
+  METHOD scenario01.
+    delete_repo( read_repo( create_repo( ) ) ).
+  ENDMETHOD.
+
+  METHOD check_response.
+
+    cl_abap_unit_assert=>assert_equals(
+      act = is_response-status
+      exp = 200
+      msg = is_response-body ).
+
+  ENDMETHOD.
+
+  METHOD create_repo.
 
     DATA: lv_body TYPE string,
           ls_repo TYPE zif_abapgit_persistence=>ty_repo.
@@ -24,17 +56,42 @@ CLASS ltcl_test IMPLEMENTATION.
     CALL TRANSFORMATION id SOURCE root = ls_create RESULT XML lv_body.
 
     DATA(ls_response) = post(
-      iv_uri  = '/sap/bc/adt/abapgit/repos'
+      iv_uri  = c_prefix && 'repos'
       iv_body = lv_body ).
 
-    cl_abap_unit_assert=>assert_equals(
-      act = ls_response-status
-      exp = 200
-      msg = ls_response-body ).
+    check_response( ls_response ).
+
+    CALL TRANSFORMATION id SOURCE XML ls_response-body RESULT root = ls_repo.
+    cl_abap_unit_assert=>assert_not_initial( ls_repo-key ).
+
+    rv_key = ls_repo-key.
+
+  ENDMETHOD.
+
+  METHOD read_repo.
+
+    DATA: ls_repo TYPE zif_abapgit_persistence=>ty_repo.
+
+
+    DATA(ls_response) = get( c_prefix && 'repos/' && iv_key ).
+
+    check_response( ls_response ).
 
     CALL TRANSFORMATION id SOURCE XML ls_response-body RESULT root = ls_repo.
 
-    cl_abap_unit_assert=>assert_not_initial( ls_repo-key ).
+    cl_abap_unit_assert=>assert_equals(
+      act = ls_repo-key
+      exp = iv_key ).
+
+    rv_key = iv_key.
+
+  ENDMETHOD.
+
+  METHOD delete_repo.
+
+    DATA(ls_response) = delete( c_prefix && 'repos/' && iv_key ).
+
+    check_response( ls_response ).
 
   ENDMETHOD.
 
