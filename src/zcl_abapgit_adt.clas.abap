@@ -53,6 +53,13 @@ private section.
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST
       ZCX_ABAPGIT_NOT_FOUND .
+  methods REPOSITORY_STATUS
+    importing
+      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
+    raising
+      ZCX_ABAPGIT_EXCEPTION
+      CX_ADT_REST
+      ZCX_ABAPGIT_NOT_FOUND .
   methods SET_BODY
     importing
       !IG_DATA type DATA
@@ -132,8 +139,12 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
       IMPORTING
         value     = lv_string ).
 
+    DATA(lv_path) = request->get_inner_rest_request( )->get_uri_path( ).
+
     TRY.
-        IF NOT lv_string IS INITIAL.
+        IF lv_path CP '*/status'.
+          repository_status( |{ lv_string ALPHA = IN }| ).
+        ELSEIF NOT lv_string IS INITIAL.
           read_repository( |{ lv_string ALPHA = IN }| ).
         ELSE.
           list_repositories( ).
@@ -202,6 +213,18 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
     DATA(ls_repo) = NEW zcl_abapgit_persistence_repo( )->read( iv_key ).
 
     set_body( ls_repo ).
+
+  ENDMETHOD.
+
+
+  METHOD repository_status.
+
+    DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( iv_key ).
+
+* todo, also supply LOG?
+    DATA(lt_result) = zcl_abapgit_file_status=>status( lo_repo ).
+
+    set_body( lt_result ).
 
   ENDMETHOD.
 

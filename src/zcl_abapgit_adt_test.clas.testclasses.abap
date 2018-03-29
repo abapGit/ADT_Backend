@@ -23,6 +23,11 @@ CLASS ltcl_test DEFINITION INHERITING FROM zcl_abapgit_adt_test FOR TESTING
         IMPORTING
           iv_key        TYPE zif_abapgit_persistence=>ty_repo-key
         RETURNING
+          VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key,
+      repo_status
+        IMPORTING
+          iv_key        TYPE zif_abapgit_persistence=>ty_repo-key
+        RETURNING
           VALUE(rv_key) TYPE zif_abapgit_persistence=>ty_repo-key.
 
 ENDCLASS.
@@ -30,7 +35,7 @@ ENDCLASS.
 CLASS ltcl_test IMPLEMENTATION.
 
   METHOD scenario01.
-    delete_repo( read_repo( create_repo( ) ) ).
+    delete_repo( repo_status( read_repo( create_repo( ) ) ) ).
   ENDMETHOD.
 
   METHOD check_response.
@@ -92,6 +97,23 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(ls_response) = delete( c_prefix && 'repos/' && iv_key ).
 
     check_response( ls_response ).
+
+  ENDMETHOD.
+
+  METHOD repo_status.
+
+    DATA: lt_status TYPE zif_abapgit_definitions=>ty_results_tt.
+
+
+    DATA(ls_response) = get( c_prefix && 'repos/' && iv_key && '/status' ).
+
+    check_response( ls_response ).
+
+    CALL TRANSFORMATION id SOURCE XML ls_response-body RESULT root = lt_status.
+
+    cl_abap_unit_assert=>assert_not_initial( lt_status ).
+
+    rv_key = iv_key.
 
   ENDMETHOD.
 
