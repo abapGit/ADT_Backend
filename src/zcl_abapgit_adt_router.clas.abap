@@ -42,5 +42,9 @@ CLASS ZCL_ABAPGIT_ADT_ROUTER IMPLEMENTATION.
       template      = |/abapgit/repos/\{{ zcl_abapgit_adt=>c_uri_key }\}/status|
       handler_class = 'ZCL_ABAPGIT_ADT' ).
 
+    registry->register_resource(
+      template      = |/abapgit/repos/\{{ zcl_abapgit_adt=>c_uri_key }\}/pull|
+      handler_class = 'ZCL_ABAPGIT_ADT' ).
+
   ENDMETHOD.
 ENDCLASS.

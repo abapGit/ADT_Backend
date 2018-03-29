@@ -53,6 +53,13 @@ private section.
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST
       ZCX_ABAPGIT_NOT_FOUND .
+  methods REPOSITORY_PULL
+    importing
+      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
+    raising
+      ZCX_ABAPGIT_EXCEPTION
+      CX_ADT_REST
+      ZCX_ABAPGIT_NOT_FOUND .
   methods REPOSITORY_STATUS
     importing
       !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
@@ -94,8 +101,8 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
     DATA: lv_string TYPE string.
 
-    mi_response = response.
 
+    mi_response = response.
 
 * todo, use CONTEXT instead?
     request->get_uri_attribute(
@@ -128,8 +135,8 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
     DATA: lv_string TYPE string.
 
-    mi_response = response.
 
+    mi_response = response.
 
 * todo, use CONTEXT instead?
     request->get_uri_attribute(
@@ -173,19 +180,33 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD post.
 
-    DATA: ls_create TYPE ty_create_repository.
+    DATA: ls_create TYPE ty_create_repository,
+          lv_string TYPE string.
+
 
     mi_response = response.
 
-
-    request->get_body_data(
+* todo, use CONTEXT instead?
+    request->get_uri_attribute(
       EXPORTING
-        content_handler = cl_adt_rest_st_handler=>create_instance( c_transformation )
+        name      = c_uri_key
+        mandatory = abap_false
       IMPORTING
-        data            = ls_create ).
+        value     = lv_string ).
+
+    DATA(lv_path) = request->get_inner_rest_request( )->get_uri_path( ).
 
     TRY.
-        create_repository( ls_create ).
+        IF lv_path CP '*/pull'.
+          repository_pull( |{ lv_string ALPHA = IN }| ).
+        ELSE.
+          request->get_body_data(
+            EXPORTING
+              content_handler = cl_adt_rest_st_handler=>create_instance( c_transformation )
+            IMPORTING
+              data            = ls_create ).
+          create_repository( ls_create ).
+        ENDIF.
       CATCH zcx_abapgit_exception INTO DATA(lx_error).
         set_error( lx_error ).
     ENDTRY.
@@ -213,6 +234,13 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
     DATA(ls_repo) = NEW zcl_abapgit_persistence_repo( )->read( iv_key ).
 
     set_body( ls_repo ).
+
+  ENDMETHOD.
+
+
+  METHOD repository_pull.
+
+    zcl_abapgit_repo_srv=>get_instance( )->get( iv_key )->deserialize( ).
 
   ENDMETHOD.
 
