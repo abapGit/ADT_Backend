@@ -39,6 +39,8 @@ private section.
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST .
   methods DELETE_REPOSITORY
+    importing
+      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
     raising
       ZCX_ABAPGIT_EXCEPTION
       CX_ADT_REST
@@ -56,6 +58,13 @@ private section.
       CX_ADT_REST
       ZCX_ABAPGIT_NOT_FOUND .
   methods REPOSITORY_PULL_CHECKS
+    importing
+      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
+    raising
+      ZCX_ABAPGIT_EXCEPTION
+      CX_ADT_REST
+      ZCX_ABAPGIT_NOT_FOUND .
+  methods REPOSITORY_PURGE
     importing
       !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
     raising
@@ -110,11 +119,28 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD delete.
 
+    DATA: lv_string TYPE string.
+
+
     mi_response = response.
     mi_request = request.
 
+* todo, use CONTEXT instead?
+    request->get_uri_attribute(
+      EXPORTING
+        name      = c_uri_key
+        mandatory = abap_false
+      IMPORTING
+        value     = lv_string ).
+
+    DATA(lv_path) = request->get_inner_rest_request( )->get_uri_path( ).
+
     TRY.
-        delete_repository( ).
+        IF lv_path CP '*/purge'.
+          repository_purge( |{ lv_string ALPHA = IN }| ).
+        ELSE.
+          delete_repository( |{ lv_string ALPHA = IN }| ).
+        ENDIF.
       CATCH zcx_abapgit_exception INTO DATA(lx_error).
         set_error( lx_error ).
       CATCH zcx_abapgit_not_found INTO DATA(lx_not_found).
@@ -127,18 +153,7 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD delete_repository.
 
-    DATA: lv_string TYPE string.
-
-
-* todo, use CONTEXT instead?
-    mi_request->get_uri_attribute(
-      EXPORTING
-        name      = c_uri_key
-        mandatory = abap_false
-      IMPORTING
-        value     = lv_string ).
-
-    zcl_abapgit_repo_srv=>get_instance( )->get( |{ lv_string ALPHA = IN }| )->delete( ).
+    zcl_abapgit_repo_srv=>get_instance( )->get( iv_key )->delete( ).
 
   ENDMETHOD.
 
@@ -271,6 +286,14 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
     DATA(ls_checks) = zcl_abapgit_repo_srv=>get_instance( )->get( iv_key )->deserialize_checks( ).
 
     set_body( ls_checks ).
+
+  ENDMETHOD.
+
+
+  METHOD repository_purge.
+
+    zcl_abapgit_repo_srv=>get_instance( )->purge(
+      zcl_abapgit_repo_srv=>get_instance( )->get( iv_key ) ).
 
   ENDMETHOD.
 

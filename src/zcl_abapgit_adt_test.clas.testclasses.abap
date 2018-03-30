@@ -18,6 +18,9 @@ CLASS ltcl_test DEFINITION INHERITING FROM zcl_abapgit_adt_test FOR TESTING
       delete_repo
         IMPORTING
           iv_key TYPE zif_abapgit_persistence=>ty_repo-key,
+      purge
+        IMPORTING
+          iv_key TYPE zif_abapgit_persistence=>ty_repo-key,
       check_response
         IMPORTING
           is_response TYPE ty_response,
@@ -42,6 +45,7 @@ ENDCLASS.
 CLASS ltcl_test IMPLEMENTATION.
 
   METHOD scenario01.
+
     DATA(lv_key) = create_repo( VALUE zcl_abapgit_adt=>ty_create_repository(
       url         = 'https://github.com/larshp/DOMA.git'
       branch_name = 'refs/heads/master'
@@ -60,7 +64,8 @@ CLASS ltcl_test IMPLEMENTATION.
     repo_pull( iv_key    = lv_key
                is_checks = ls_checks ).
 
-    delete_repo( lv_key ).
+    purge( lv_key ).
+
   ENDMETHOD.
 
   METHOD repo_pull_checks.
@@ -117,6 +122,14 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = ls_repo-key
       exp = iv_key ).
+
+  ENDMETHOD.
+
+  METHOD purge.
+
+    DATA(ls_response) = delete( c_prefix && 'repos/' && iv_key && '/purge' ).
+
+    check_response( ls_response ).
 
   ENDMETHOD.
 
