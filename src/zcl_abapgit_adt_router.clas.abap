@@ -1,16 +1,16 @@
-class ZCL_ABAPGIT_ADT_ROUTER definition
-  public
-  inheriting from CL_ADT_DISC_RES_APP_BASE
-  create public .
+CLASS zcl_abapgit_adt_router DEFINITION
+  PUBLIC
+  INHERITING FROM cl_adt_disc_res_app_base
+  CREATE PUBLIC .
 
-public section.
-protected section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
 
-  methods REGISTER_RESOURCES
-    redefinition .
-  methods GET_APPLICATION_TITLE
-    redefinition .
-private section.
+    METHODS register_resources
+        REDEFINITION .
+    METHODS get_application_title
+        REDEFINITION .
+  PRIVATE SECTION.
 ENDCLASS.
 
 

@@ -1,63 +1,63 @@
-class ZCL_ABAPGIT_ADT_TEST definition
-  public
-  abstract
-  create public
-  for testing
-  duration short
-  risk level harmless .
+CLASS zcl_abapgit_adt_test DEFINITION
+  PUBLIC
+  ABSTRACT
+  CREATE PUBLIC
+  FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS .
 
-public section.
-protected section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
 
-  types:
-    BEGIN OF ty_response,
-           status TYPE string,
-           body   TYPE string,
-         END OF ty_response .
+    TYPES:
+      BEGIN OF ty_response,
+        status TYPE string,
+        body   TYPE string,
+      END OF ty_response .
 
-  methods GET
-    importing
-      !IV_URI type STRING
-      !IV_BODY type STRING optional
-    returning
-      value(RS_RESPONSE) type TY_RESPONSE .
-  methods PUT
-    importing
-      !IV_URI type STRING
-      !IV_BODY type STRING optional
-    returning
-      value(RS_RESPONSE) type TY_RESPONSE .
-  methods POST
-    importing
-      !IV_URI type STRING
-      !IV_BODY type STRING optional
-    returning
-      value(RS_RESPONSE) type TY_RESPONSE .
-  methods DELETE
-    importing
-      !IV_URI type STRING
-      !IV_BODY type STRING optional
-    returning
-      value(RS_RESPONSE) type TY_RESPONSE .
-private section.
+    METHODS get
+      IMPORTING
+        !iv_uri            TYPE string
+        !iv_body           TYPE string OPTIONAL
+      RETURNING
+        VALUE(rs_response) TYPE ty_response .
+    METHODS put
+      IMPORTING
+        !iv_uri            TYPE string
+        !iv_body           TYPE string OPTIONAL
+      RETURNING
+        VALUE(rs_response) TYPE ty_response .
+    METHODS post
+      IMPORTING
+        !iv_uri            TYPE string
+        !iv_body           TYPE string OPTIONAL
+      RETURNING
+        VALUE(rs_response) TYPE ty_response .
+    METHODS delete
+      IMPORTING
+        !iv_uri            TYPE string
+        !iv_body           TYPE string OPTIONAL
+      RETURNING
+        VALUE(rs_response) TYPE ty_response .
+  PRIVATE SECTION.
 
-  methods REQUEST
-    importing
-      !IV_URI type STRING
-      !IV_BODY type STRING
-      !IV_METHOD type STRING
-    returning
-      value(RS_RESPONSE) type TY_RESPONSE .
-  class-methods XSTRING_TO_STRING_UTF8
-    importing
-      !IV_DATA type XSTRING
-    returning
-      value(RV_STRING) type STRING .
-  class-methods STRING_TO_XSTRING_UTF8
-    importing
-      !IV_STRING type STRING
-    returning
-      value(RV_XSTRING) type XSTRING .
+    METHODS request
+      IMPORTING
+        !iv_uri            TYPE string
+        !iv_body           TYPE string
+        !iv_method         TYPE string
+      RETURNING
+        VALUE(rs_response) TYPE ty_response .
+    CLASS-METHODS xstring_to_string_utf8
+      IMPORTING
+        !iv_data         TYPE xstring
+      RETURNING
+        VALUE(rv_string) TYPE string .
+    CLASS-METHODS string_to_xstring_utf8
+      IMPORTING
+        !iv_string        TYPE string
+      RETURNING
+        VALUE(rv_xstring) TYPE xstring .
 ENDCLASS.
 
 

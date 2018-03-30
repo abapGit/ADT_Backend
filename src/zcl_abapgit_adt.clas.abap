@@ -24,71 +24,71 @@ CLASS zcl_abapgit_adt DEFINITION
     METHODS put
         REDEFINITION .
   PROTECTED SECTION.
-private section.
+  PRIVATE SECTION.
 
-  data MI_RESPONSE type ref to IF_ADT_REST_RESPONSE .
-  data MI_REQUEST type ref to IF_ADT_REST_REQUEST .
+    DATA mi_response TYPE REF TO if_adt_rest_response .
+    DATA mi_request TYPE REF TO if_adt_rest_request .
 
-  methods CREATE_REPOSITORY
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST
-      ZCX_ABAPGIT_NOT_FOUND .
-  methods LIST_REPOSITORIES
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST .
-  methods DELETE_REPOSITORY
-    importing
-      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST
-      ZCX_ABAPGIT_NOT_FOUND .
-  methods READ_REPOSITORY
-    importing
-      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST
-      ZCX_ABAPGIT_NOT_FOUND .
-  methods REPOSITORY_PULL
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST
-      ZCX_ABAPGIT_NOT_FOUND .
-  methods REPOSITORY_PULL_CHECKS
-    importing
-      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST
-      ZCX_ABAPGIT_NOT_FOUND .
-  methods REPOSITORY_PURGE
-    importing
-      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST
-      ZCX_ABAPGIT_NOT_FOUND .
-  methods REPOSITORY_STATUS
-    importing
-      !IV_KEY type ZIF_ABAPGIT_PERSISTENCE=>TY_REPO-KEY
-    raising
-      ZCX_ABAPGIT_EXCEPTION
-      CX_ADT_REST
-      ZCX_ABAPGIT_NOT_FOUND .
-  methods SET_BODY
-    importing
-      !IG_DATA type DATA
-    raising
-      CX_ADT_REST .
-  methods SET_ERROR
-    importing
-      !II_MESSAGE type ref to IF_MESSAGE
-      !IV_STATUS type I default 500
-    raising
-      CX_ADT_REST .
+    METHODS create_repository
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest
+        zcx_abapgit_not_found .
+    METHODS list_repositories
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest .
+    METHODS delete_repository
+      IMPORTING
+        !iv_key TYPE zif_abapgit_persistence=>ty_repo-key
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest
+        zcx_abapgit_not_found .
+    METHODS read_repository
+      IMPORTING
+        !iv_key TYPE zif_abapgit_persistence=>ty_repo-key
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest
+        zcx_abapgit_not_found .
+    METHODS repository_pull
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest
+        zcx_abapgit_not_found .
+    METHODS repository_pull_checks
+      IMPORTING
+        !iv_key TYPE zif_abapgit_persistence=>ty_repo-key
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest
+        zcx_abapgit_not_found .
+    METHODS repository_purge
+      IMPORTING
+        !iv_key TYPE zif_abapgit_persistence=>ty_repo-key
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest
+        zcx_abapgit_not_found .
+    METHODS repository_status
+      IMPORTING
+        !iv_key TYPE zif_abapgit_persistence=>ty_repo-key
+      RAISING
+        zcx_abapgit_exception
+        cx_adt_rest
+        zcx_abapgit_not_found .
+    METHODS set_body
+      IMPORTING
+        !ig_data TYPE data
+      RAISING
+        cx_adt_rest .
+    METHODS set_error
+      IMPORTING
+        !ii_message TYPE REF TO if_message
+        !iv_status  TYPE i DEFAULT 500
+      RAISING
+        cx_adt_rest .
 ENDCLASS.
 
 
