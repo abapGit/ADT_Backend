@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/abapGit/ADT_Backend.svg?branch=master)](https://travis-ci.org/abapGit/ADT_Backend)
+
 # ADT_Backend
 abapGit ADT Backend
 
