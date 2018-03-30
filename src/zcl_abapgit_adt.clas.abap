@@ -270,11 +270,14 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
       IMPORTING
         value     = lv_string ).
 
-    mi_request->get_body_data(
-      EXPORTING
-        content_handler = cl_adt_rest_st_handler=>create_instance( c_transformation )
-      IMPORTING
-        data            = ls_checks ).
+    TRY.
+        mi_request->get_body_data(
+          EXPORTING
+            content_handler = cl_adt_rest_st_handler=>create_instance( c_transformation )
+          IMPORTING
+            data            = ls_checks ).
+      CATCH cx_adt_rest.
+    ENDTRY.
 
     zcl_abapgit_repo_srv=>get_instance( )->get( |{ lv_string ALPHA = IN }| )->deserialize( ls_checks ).
 
