@@ -3,6 +3,10 @@
 # ADT_Backend
 abapGit ADT Backend
 
+### Requirements
+* abapGit development version installed
+* 740SP08
+
 ### Links
 https://www.sap.com/documents/2013/04/12289ce1-527c-0010-82c7-eda71af511fa.html
 
