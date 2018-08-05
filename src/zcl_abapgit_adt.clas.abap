@@ -295,8 +295,13 @@ CLASS ZCL_ABAPGIT_ADT IMPLEMENTATION.
 
   METHOD repository_purge.
 
+    DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( iv_key ).
+
+* todo, perform checks
+
     zcl_abapgit_repo_srv=>get_instance( )->purge(
-      zcl_abapgit_repo_srv=>get_instance( )->get( iv_key ) ).
+      io_repo   = lo_repo
+      is_checks = VALUE #( ) ).
 
   ENDMETHOD.
 
