@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<abapGit version="v1.0.0" serializer="LCL_OBJECT_DEVC" serializer_version="v1.0.0">
+<abapGit version="v1.0.0" serializer="LZCL_OBJECT_DEVC" serializer_version="v1.0.0">
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DEVC>
-    <CTEXT>abapGit ADT Backend</CTEXT>
+    <CTEXT>ADT Ressources for abapGIT</CTEXT>
+    <COMP_POSID>BC-CP-ABA</COMP_POSID>
+    <COMPONENT>SKC0000002</COMPONENT>
+    <TPCLASS>X</TPCLASS>
    </DEVC>
   </asx:values>
  </asx:abap>
