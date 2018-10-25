@@ -1,0 +1,21 @@
+<?sap.transform simple?>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_INFO_EXT" template="main" version="0.1">
+  <tt:root name="REPOSITORY_EXTERNAL_REQ" type="cl:TY_REQUEST_DATA"/>
+  <tt:template name="MAIN">
+    <repository_ext>
+      <url>
+        <tt:value ref="REPOSITORY_EXTERNAL_REQ.URL"/>
+      </url>
+      <tt:cond>
+        <user>
+          <tt:value ref="REPOSITORY_EXTERNAL_REQ.USER"/>
+        </user>
+      </tt:cond>
+      <tt:cond>
+        <password>
+          <tt:value ref="REPOSITORY_EXTERNAL_REQ.PASSWORD"/>
+        </password>
+      </tt:cond>
+    </repository_ext>
+  </tt:template>
+</tt:transform>

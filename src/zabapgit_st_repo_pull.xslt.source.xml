@@ -1,0 +1,24 @@
+<?sap.transform simple?>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_PULL" template="main" version="0.1">
+  <tt:root name="REPOSITORY" type="cl:TY_REQUEST_PULL_DATA"/>
+  <tt:template name="MAIN">
+    <repository>
+      <branch>
+        <tt:value ref=".REPOSITORY.BRANCH"/>
+      </branch>
+      <transportRequest>
+        <tt:value ref="REPOSITORY.TRANSPORTREQUEST"/>
+      </transportRequest>
+      <tt:cond>
+        <user>
+          <tt:value ref="REPOSITORY.USER"/>
+        </user>
+      </tt:cond>
+      <tt:cond>
+        <password>
+          <tt:value ref="REPOSITORY.PASSWORD"/>
+        </password>
+      </tt:cond>
+    </repository>
+  </tt:template>
+</tt:transform>

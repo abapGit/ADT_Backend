@@ -1,0 +1,34 @@
+<?sap.transform simple?>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_INFO_EXT" template="main" version="0.1">
+  <tt:root name="REPOSITORY_EXTERNAL" type="cl:TY_RESPONSE_DATA"/>
+  <tt:template name="MAIN">
+    <repository_external>
+      <access_mode>
+        <tt:value ref="REPOSITORY_EXTERNAL.ACCESS_MODE"/>
+      </access_mode>
+      <tt:cond>
+        <branches>
+          <tt:loop ref=".REPOSITORY_EXTERNAL.BRANCHES">
+            <branch>
+              <sha1>
+                <tt:value ref="$ref.SHA1"/>
+              </sha1>
+              <name>
+                <tt:value ref="$ref.NAME"/>
+              </name>
+              <type>
+                <tt:value ref="$ref.TYPE"/>
+              </type>
+              <is_head>
+                <tt:value ref="$ref.IS_HEAD"/>
+              </is_head>
+              <display_name>
+                <tt:value ref="$ref.DISPLAY_NAME"/>
+              </display_name>
+            </branch>
+          </tt:loop>
+        </branches>
+      </tt:cond>
+    </repository_external>
+  </tt:template>
+</tt:transform>
