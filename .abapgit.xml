@@ -12,6 +12,13 @@
     <item>/package.json</item>
     <item>/.travis.yml</item>
    </IGNORE>
+   <REQUIREMENTS>
+    <item>
+     <COMPONENT>SAP_BASIS</COMPONENT>
+     <MIN_RELEASE>740</MIN_RELEASE>
+     <MIN_PATCH>0008</MIN_PATCH>
+    </item>
+   </REQUIREMENTS>
   </DATA>
  </asx:values>
 </asx:abap>
