@@ -76,7 +76,7 @@ CLASS ZCL_ABAPGIT_RES_REPOS IMPLEMENTATION.
     cl_adt_rest_comp_cnt_handler=>create( request = request content_handler = lo_resp_content_handler )->check_cnt_type_is_supported( ).
 
     TRY.
-        DATA(lt_repos) = NEW zcl_abapgit_persistence_repo( )->list( ).
+        DATA(lt_repos) = zcl_abapgit_persist_factory=>get_repo( )->list( ).
 
 *** Consider only online repos
         DELETE lt_repos WHERE offline = abap_true.
