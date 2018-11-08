@@ -77,7 +77,7 @@ CLASS ZCL_ABAPGIT_RES_REPO_INFO_EXT IMPLEMENTATION.
         ENDIF.
 
 *** Check whether passed repo URL has public or privated access
-        ls_response_data-access_mode = zcl_abapgit_http=>determine_access_level( ls_request_data-url ).
+        ls_response_data-access_mode = zcl_abapgit_http_adt=>determine_access_level( ls_request_data-url ).
 
 *** Retrieve list of branches for repo
         IF ls_response_data-access_mode = 'PUBLIC' OR
