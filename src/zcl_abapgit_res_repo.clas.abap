@@ -1,21 +1,33 @@
-class ZCL_ABAPGIT_RES_REPO definition
-  public
-  inheriting from CL_ADT_REST_RESOURCE
-  final
-  create public .
+CLASS zcl_abapgit_res_repo DEFINITION
+  PUBLIC
+  INHERITING FROM cl_adt_rest_resource
+  FINAL
+  CREATE PUBLIC.
 
-public section.
+  PUBLIC SECTION.
 
-  methods DELETE
-    redefinition .
-protected section.
+    TYPES:
+      BEGIN OF ty_response_data,
+        type             TYPE string,
+        name             TYPE string,
+        filename         TYPE string,
+        package          TYPE string,
+        status           TYPE string,
+        message          TYPE string,
+      END OF ty_response_data,
+      tt_response_data TYPE TABLE OF ty_response_data.
+
+    METHODS delete REDEFINITION.
+
+  PROTECTED SECTION.
+
   PRIVATE SECTION.
+
 ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_RES_REPO IMPLEMENTATION.
-
+CLASS zcl_abapgit_res_repo IMPLEMENTATION.
 
   METHOD delete.
 
@@ -33,9 +45,10 @@ CLASS ZCL_ABAPGIT_RES_REPO IMPLEMENTATION.
         response->set_status( cl_rest_status_code=>gc_success_ok ).
 
       CATCH zcx_abapgit_exception INTO DATA(lx_exception).
-        zcx_adt_rest_abapgit=>raise_with_error( ix_error = lx_exception
-                                               iv_http_status = cl_rest_status_code=>gc_client_error_not_found ).
+        zcx_adt_rest_abapgit=>raise_with_error( ix_error       = lx_exception
+                                                iv_http_status = cl_rest_status_code=>gc_client_error_not_found ).
     ENDTRY.
 
   ENDMETHOD.
+
 ENDCLASS.

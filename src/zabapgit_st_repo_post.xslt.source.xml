@@ -2,29 +2,42 @@
 <tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPOS" template="main" version="0.1">
   <tt:root name="REPOSITORY" type="cl:TY_REQUEST_DATA"/>
   <tt:template name="MAIN">
-    <repository>
-      <branch>
-        <tt:value ref=".REPOSITORY.BRANCH"/>
-      </branch>
-      <package tt:value-ref="REPOSITORY.PACKAGE"/>
-      <tt:cond>
-        <password>
-          <tt:value ref="REPOSITORY.PASSWORD"/>
-        </password>
-      </tt:cond>
-      <tt:cond>
-        <transportRequest>
-          <tt:value ref="REPOSITORY.TRANSPORTREQUEST"/>
-        </transportRequest>
-      </tt:cond>
-      <url>
-        <tt:value ref="REPOSITORY.URL"/>
-      </url>
-      <tt:cond>
-        <user>
-          <tt:value ref="REPOSITORY.USER"/>
-        </user>
-      </tt:cond>
+    <repository tt:extensible="deep">
+       <tt:group>
+        <tt:cond frq="?">
+          <branch>
+            <tt:value ref="REPOSITORY.branch"/>
+          </branch>
+        </tt:cond>
+        <tt:cond frq="?">
+          <package>
+            <tt:value ref="REPOSITORY.package"/>
+          </package>
+        </tt:cond>
+        <tt:cond frq="?">
+          <transportRequest>
+            <tt:value ref="REPOSITORY.transportRequest"/>
+          </transportRequest>
+        </tt:cond>
+        <tt:cond frq="?">
+          <url>
+            <tt:value ref="REPOSITORY.url"/>
+          </url>
+        </tt:cond>
+        <tt:cond frq="?">
+          <user>
+            <tt:value ref="REPOSITORY.user"/>
+          </user>
+        </tt:cond>
+        <tt:cond frq="?">
+          <password>
+            <tt:value ref="REPOSITORY.password"/>
+          </password>
+        </tt:cond>
+        <tt:cond>
+           <!--ignore field if not defined-->
+        </tt:cond>
+      </tt:group>
     </repository>
   </tt:template>
 </tt:transform>
