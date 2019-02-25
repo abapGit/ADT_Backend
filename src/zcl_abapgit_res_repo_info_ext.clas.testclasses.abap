@@ -39,7 +39,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repo_info_ext=>co_root_name_request.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_info_ext_req
+    CALL TRANSFORMATION zabapgit_st_repo_info_ext_req
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -73,7 +73,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repo_info_ext=>co_root_name_request.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_info_ext_req
+    CALL TRANSFORMATION zabapgit_st_repo_info_ext_req
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -108,7 +108,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repo_info_ext=>co_root_name_request.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_info_ext_req
+    CALL TRANSFORMATION zabapgit_st_repo_info_ext_req
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 

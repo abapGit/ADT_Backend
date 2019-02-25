@@ -100,7 +100,7 @@ CLASS zcl_abapgit_res_repo_info_ext IMPLEMENTATION.
         response->set_status( cl_rest_status_code=>gc_success_ok ).
 
       CATCH zcx_abapgit_exception INTO DATA(lx_abapgit_exception).
-        cx_adt_rest_abapgit=>raise_with_error( lx_abapgit_exception ).
+        zcx_adt_rest_abapgit=>raise_with_error( lx_abapgit_exception ).
     ENDTRY.
 
   ENDMETHOD.

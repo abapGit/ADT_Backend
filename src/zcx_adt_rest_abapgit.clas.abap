@@ -13,7 +13,7 @@ class ZCX_ADT_REST_ABAPGIT definition
         !IX_ERROR       type ref to CX_ROOT
         !IV_HTTP_STATUS type I optional
       raising
-        CX_ADT_REST_ABAPGIT .
+        ZCX_ADT_REST_ABAPGIT .
     methods CONSTRUCTOR
       importing
         TEXTID          like IF_T100_MESSAGE=>T100KEY optional
@@ -138,7 +138,7 @@ CLASS zcx_adt_rest_abapgit IMPLEMENTATION.
       IX_ERROR     = LX_ERROR
       IV_ATTRIBUTE = LS_MSG_KEY-ATTR4 ).
 
-    raise exception type CX_ADT_REST_ABAPGIT
+    raise exception type ZCX_ADT_REST_ABAPGIT
       message
       id LS_MSG_KEY-MSGID
       type 'E'
