@@ -20,13 +20,13 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
       trkorr = @iv_transport_request.
 
     IF sy-subrc NE 0.
-      MESSAGE e003(a4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
+      MESSAGE e003(za4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
       zcx_abapgit_exception=>raise_t100( ).
     ELSEIF ls_e070-trstatus NE 'D'.
-      MESSAGE e004(a4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
+      MESSAGE e004(za4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
       zcx_abapgit_exception=>raise_t100( ).
     ELSEIF ls_e070-as4user NE sy-uname.
-      MESSAGE e005(a4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
+      MESSAGE e005(za4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
       zcx_abapgit_exception=>raise_t100( ).
     ENDIF.
 
