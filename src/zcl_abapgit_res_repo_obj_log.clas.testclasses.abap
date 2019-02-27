@@ -40,7 +40,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repo_obj_log=>co_root_name_pull.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_pull
+    CALL TRANSFORMATION zabapgit_st_repo_pull
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -76,7 +76,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repo_obj_log=>co_root_name_pull.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_pull
+    CALL TRANSFORMATION zabapgit_st_repo_pull
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -113,7 +113,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repo_obj_log=>co_root_name_pull.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_pull
+    CALL TRANSFORMATION zabapgit_st_repo_pull
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -149,7 +149,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repo_obj_log=>co_root_name_pull.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_pull
+    CALL TRANSFORMATION zabapgit_st_repo_pull
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
