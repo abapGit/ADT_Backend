@@ -94,7 +94,8 @@ CLASS ZCL_ABAPGIT_HTTP_ADT IMPLEMENTATION.
     zcl_abapgit_login_manager=>load( iv_uri    = iv_url
                                      ii_client = li_client ).
 
-    zcl_abapgit_exit=>get_instance( )->http_client( li_client ).
+    zcl_abapgit_exit=>get_instance( )->http_client( ii_client = li_client iv_url = iv_url ).
+
 
     lo_client->send_receive( ).
     IF check_auth_requested( li_client ) = abap_true.
