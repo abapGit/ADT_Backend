@@ -23,8 +23,8 @@ CLASS zcl_abapgit_res_repos DEFINITION
       tt_request_data TYPE TABLE OF ty_request_data.
 
     TYPES: BEGIN OF ty_repo_w_links.
-              INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
-              TYPES: links TYPE if_atom_types=>link_t.
+             INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
+    TYPES: links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
 
     TYPES: tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY.
@@ -51,7 +51,7 @@ CLASS zcl_abapgit_res_repos DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA: abapgit_provider TYPE REF TO lzif_abapgit_provider.
+    DATA: abapgit_provider TYPE REF TO lif_abapgit_provider.
 
     METHODS validate_request_data
       IMPORTING
@@ -73,10 +73,10 @@ CLASS zcl_abapgit_res_repos DEFINITION
                          context  TYPE REF TO if_rest_context OPTIONAL
                RAISING   cx_adt_rest,
       import_repository IMPORTING is_request_data TYPE ty_request_data
-                        RAISING   cx_adt_rest_abapgit,
+                        RAISING   zcx_adt_rest_abapgit,
       set_import_response_data IMPORTING response TYPE REF TO if_adt_rest_response
                                RAISING   cx_adt_rest,
-      set_abapgit_provider IMPORTING io_abapgit_provider TYPE REF TO lzif_abapgit_provider.
+      set_abapgit_provider IMPORTING io_abapgit_provider TYPE REF TO lif_abapgit_provider.
 
 ENDCLASS.
 
@@ -118,7 +118,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
                 data            = lt_repos_w_links ).
 
       CATCH cx_st_error zcx_abapgit_exception INTO DATA(lx_error).
-        cx_adt_rest_abapgit=>raise_with_error(
+        zcx_adt_rest_abapgit=>raise_with_error(
             ix_error       = lx_error
             iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
     ENDTRY.
@@ -210,9 +210,6 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
                               root_name    = co_root_name_post
                               content_type = co_content_type_repo_v1 ) ).
 
-    "[A4C_AGIT_LOG]
-    zcl_abapgit_operation_log=>clear( ).
-
     "Retrieve request data
     request->get_body_data(
       EXPORTING
@@ -247,9 +244,6 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    "[A4C_AGIT_LOG]
-    zcl_abapgit_operation_log=>clear( ).
-
     LOOP AT request_data INTO DATA(single_repository).
       me->import_repository( is_request_data = single_repository ).
     ENDLOOP.
@@ -268,7 +262,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
   METHOD constructor.
 
     super->constructor( ).
-    CREATE OBJECT me->abapgit_provider TYPE lzcl_abapgit_provider.
+    CREATE OBJECT me->abapgit_provider TYPE lcl_abapgit_provider.
 
   ENDMETHOD.
 
@@ -296,7 +290,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 *          CATCH zcx_abapgit_exception.
 *        ENDTRY.
 
-        cx_adt_rest_abapgit=>raise_with_error(
+        zcx_adt_rest_abapgit=>raise_with_error(
             ix_error       = lx_abapgit_exception
             iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
     ENDTRY.
@@ -309,9 +303,18 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
       st_name      = co_st_name_post_res
       root_name    = co_root_name_post_res
       content_type = co_content_type_object_v1 ).
+    TYPES:
+      BEGIN OF t_obj_result,
+        obj_type   TYPE trobjtype,
+        obj_name   TYPE sobj_name,
+        obj_status TYPE symsgty,
+        package    TYPE devclass,
+        msg_type   TYPE symsgty,
+        msg_text   TYPE string,
+      END OF t_obj_result.
+    DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
 
-    DATA(lt_result_table) = zcl_abapgit_operation_log=>get_result_table( ).
-
+    " TODO fill lt_result_table
     response->set_body_data(
       content_handler = lo_resp_content_handler
       data            = lt_result_table ).
