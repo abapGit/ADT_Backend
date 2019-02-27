@@ -17,9 +17,9 @@ INTERFACE lif_abapgit_provider.
     perform_import IMPORTING is_request_data TYPE zcl_abapgit_res_repos=>ty_request_data
                    RAISING   zcx_abapgit_exception.
 ENDINTERFACE.
-CLASS lzcl_abapgit_provider DEFINITION.
+CLASS lcl_abapgit_provider DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_abapgit_provider.
 ENDCLASS.
-CLASS ltzcl_abapgit_repos_resource DEFINITION DEFERRED.
-CLASS zcl_abapgit_res_repos DEFINITION LOCAL FRIENDS ltzcl_abapgit_repos_resource.
+CLASS ltcl_abapgit_repos_resource DEFINITION DEFERRED.
+CLASS zcl_abapgit_res_repos DEFINITION LOCAL FRIENDS ltcl_abapgit_repos_resource.

@@ -4,7 +4,7 @@
   <tt:template name="REPO_V2">
     <repositories>
       <tt:loop name="line" ref=".REPOSITORIES">
-        <tt:call transformation="ABAPGIT_ST_REPO_POST">
+        <tt:call transformation="ZABAPGIT_ST_REPO_POST">
           <tt:with-root name="REPOSITORY" ref="$line"/>
         </tt:call>
       </tt:loop>

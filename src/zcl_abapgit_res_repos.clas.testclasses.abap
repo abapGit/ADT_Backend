@@ -47,7 +47,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repos=>co_root_name_post.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_post
+    CALL TRANSFORMATION zabapgit_st_repo_post
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -87,7 +87,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repos=>co_root_name_post.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_post
+    CALL TRANSFORMATION zabapgit_st_repo_post
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -128,7 +128,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repos=>co_root_name_post.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_post
+    CALL TRANSFORMATION zabapgit_st_repo_post
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -168,7 +168,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     <lt_result>-name = zcl_abapgit_res_repos=>co_root_name_post.
     GET REFERENCE OF ls_data INTO <lt_result>-value.
 
-    CALL TRANSFORMATION abapgit_st_repo_post
+    CALL TRANSFORMATION zabapgit_st_repo_post
       SOURCE XML lv_input_xml
       RESULT     (lt_result).
 
@@ -199,7 +199,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     xml_data = xml_data && |  </repository>| && cl_abap_char_utilities=>newline.
     xml_data = xml_data && |</repositories>|.
 
-    CALL TRANSFORMATION abapgit_st_repo_post_v2
+    CALL TRANSFORMATION zabapgit_st_repo_post_v2
       SOURCE XML xml_data
       RESULT repositories = repository_data.
 
@@ -214,7 +214,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     repository_data = VALUE #( ( url = 'https://github.com/Wunderfitz/yy.git' branch = 'refs/heads/master' package = 'TEST_YY' )
                                ( url = 'https://github.com/epeterson320/ABAP-Logger.git' branch = 'refs/heads/master' package = 'TEST_LOGGER' ) ).
 
-    CALL TRANSFORMATION abapgit_st_repo_post_v2
+    CALL TRANSFORMATION zabapgit_st_repo_post_v2
       SOURCE repositories = repository_data
       RESULT XML xml_data.
 
@@ -227,16 +227,16 @@ ENDCLASS.
 
 CLASS ltd_abapgit_provider_default DEFINITION.
   PUBLIC SECTION.
-    INTERFACES: lzif_abapgit_provider.
+    INTERFACES: lif_abapgit_provider.
 ENDCLASS.
 
 CLASS ltd_abapgit_provider_default IMPLEMENTATION.
 
-  METHOD lzif_abapgit_provider~list_repositories.
+  METHOD lif_abapgit_provider~list_repositories.
 
   ENDMETHOD.
 
-  METHOD lzif_abapgit_provider~perform_import.
+  METHOD lif_abapgit_provider~perform_import.
     CASE is_request_data-url.
       WHEN 'https://github.com/Wunderfitz/jak.git'.
         cl_abap_unit_assert=>assert_equals( exp = 'refs/heads/master' act = is_request_data-branch ).
@@ -249,11 +249,11 @@ CLASS ltd_abapgit_provider_default IMPLEMENTATION.
     ENDCASE.
   ENDMETHOD.
 
-  METHOD lzif_abapgit_provider~set_authentication_info.
+  METHOD lif_abapgit_provider~set_authentication_info.
 
   ENDMETHOD.
 
-  METHOD lzif_abapgit_provider~validate_package.
+  METHOD lif_abapgit_provider~validate_package.
     CASE iv_package.
       WHEN 'TESCHD_JAK'.
         " Good
@@ -264,19 +264,19 @@ CLASS ltd_abapgit_provider_default IMPLEMENTATION.
     ENDCASE.
   ENDMETHOD.
 
-  METHOD lzif_abapgit_provider~validate_transport_request.
+  METHOD lif_abapgit_provider~validate_transport_request.
 
     cl_abap_unit_assert=>assert_initial( iv_transport_request ).
 
   ENDMETHOD.
 
-  METHOD lzif_abapgit_provider~is_tr_check_required.
+  METHOD lif_abapgit_provider~is_tr_check_required.
     CLEAR: rv_is_required.
   ENDMETHOD.
 
 ENDCLASS.
 
-CLASS ltzcl_abapgit_repos_resource DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
+CLASS ltcl_abapgit_repos_resource DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
   PRIVATE SECTION.
     DATA: request_stub           TYPE REF TO cl_adt_rest_request_stub,
           response_spy           TYPE REF TO cl_adt_rest_response_spy,
@@ -288,7 +288,7 @@ CLASS ltzcl_abapgit_repos_resource DEFINITION FOR TESTING RISK LEVEL HARMLESS DU
       standard_v2 FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
-CLASS ltzcl_abapgit_repos_resource IMPLEMENTATION.
+CLASS ltcl_abapgit_repos_resource IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT me->request_stub.

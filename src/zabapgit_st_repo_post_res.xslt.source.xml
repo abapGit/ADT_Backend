@@ -4,44 +4,4 @@
   <tt:template name="MAIN">
     <objects>
       <tt:loop ref=".OBJECTS">
-        <object tt:extensible="deep">
-           <tt:group>
-            <tt:cond frq="?">
-              <obj_type>
-                <tt:value ref="$ref.obj_type"/>
-              </obj_type>
-            </tt:cond>
-            <tt:cond frq="?">
-              <obj_name>
-                <tt:value ref="$ref.obj_name"/>
-              </obj_name>
-            </tt:cond>
-            <tt:cond frq="?">
-              <package>
-                <tt:value ref="$ref.package"/>
-              </package>
-            </tt:cond>
-            <tt:cond frq="?">
-              <obj_status>
-                <tt:value ref="$ref.obj_status"/>
-              </obj_status>
-            </tt:cond>
-            <tt:cond frq="?">
-              <msg_type>
-                <tt:value ref="$ref.msg_type"/>
-              </msg_type>
-            </tt:cond>
-            <tt:cond frq="?">
-              <msg_text>
-                <tt:value ref="$ref.msg_text"/>
-              </msg_text>
-            </tt:cond>
-            <tt:cond>
-               <!--ignore field if not defined-->
-            </tt:cond>
-          </tt:group>
-        </object>
-      </tt:loop>
-    </objects>
-  </tt:template>
-</tt:transform>
+        <object tt:extensible

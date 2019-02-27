@@ -4,9 +4,6 @@
   <asx:values>
    <DEVC>
     <CTEXT>ADT Ressources for abapGIT</CTEXT>
-    <COMP_POSID>BC-CP-ABA</COMP_POSID>
-    <COMPONENT>SKC0000002</COMPONENT>
-    <TPCLASS>X</TPCLASS>
    </DEVC>
   </asx:values>
  </asx:abap>
