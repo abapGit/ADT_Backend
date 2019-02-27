@@ -19,22 +19,22 @@ CLASS zcl_abapgit_res_repo_obj_log DEFINITION
         password         TYPE string,
       END OF ty_request_pull_data.
     TYPES: BEGIN OF ty_repo_w_links.
-        INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
-    TYPES:   links    TYPE if_atom_types=>link_t.
+             INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
+    TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
     TYPES:
       tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY.
 
-    CONSTANTS co_class_name             TYPE seoclsname VALUE 'CL_ABAPGIT_RES_REPOS' ##NO_TEXT.
-    CONSTANTS co_resource_type          TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
-    CONSTANTS co_st_name_pull           TYPE string     VALUE 'ABAPGIT_ST_REPO_PULL' ##NO_TEXT.
-    CONSTANTS co_st_name_post_res       TYPE string     VALUE 'ABAPGIT_ST_REPO_POST_RES'.
+    CONSTANTS co_class_name             TYPE seoclsname VALUE 'ZCL_ABAPGIT_RES_REPOS' ##NO_TEXT.
+    CONSTANTS co_resource_type TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
+    CONSTANTS co_st_name_pull           TYPE string     VALUE 'ZABAPGIT_ST_REPO_PULL' ##NO_TEXT.
+    CONSTANTS co_st_name_post_res       TYPE string     VALUE 'ZABAPGIT_ST_REPO_POST_RES'.
     CONSTANTS co_root_name_pull         TYPE string     VALUE 'REPOSITORY' ##NO_TEXT.
     CONSTANTS co_root_name_post_res     TYPE string     VALUE 'OBJECTS'.
     CONSTANTS co_content_type_repo_v1   TYPE string     VALUE 'application/abapgit.adt.repo.v1+xml' ##NO_TEXT.
     CONSTANTS co_content_type_repos_v1  TYPE string     VALUE 'application/abapgit.adt.repos.v1+xml' ##NO_TEXT.
     CONSTANTS co_content_type_object_v1 TYPE string     VALUE 'application/abapgit.adt.repo.object.v1+xml' ##NO_TEXT.
-    CONSTANTS co_st_name_get            TYPE string     VALUE 'ABAPGIT_ST_REPOS' ##NO_TEXT.
+    CONSTANTS co_st_name_get            TYPE string     VALUE 'ZABAPGIT_ST_REPOS' ##NO_TEXT.
     CONSTANTS co_root_name_get          TYPE string     VALUE 'REPOSITORIES' ##NO_TEXT.
     CONSTANTS co_content_type_repo_v2   TYPE string     VALUE 'application/abapgit.adt.repo.v2+xml' ##NO_TEXT.
 
@@ -45,19 +45,17 @@ CLASS zcl_abapgit_res_repo_obj_log DEFINITION
 
     METHODS validate_request_data
       IMPORTING
-        !IS_REQUEST_DATA TYPE TY_REQUEST_PULL_DATA
+        !is_request_data TYPE ty_request_pull_data
       RAISING
-        ZCX_ABAPGIT_EXCEPTION .
+        zcx_abapgit_exception .
 ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_RES_REPO_OBJ_LOG IMPLEMENTATION.
+CLASS zcl_abapgit_res_repo_obj_log IMPLEMENTATION.
 
 
   METHOD get.
-
-    DATA lv_app_log_key  TYPE tsa4c_agit_applog_key-app_log.
 
     DATA(lo_resp_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
          st_name      = co_st_name_post_res
@@ -69,18 +67,17 @@ CLASS ZCL_ABAPGIT_RES_REPO_OBJ_LOG IMPLEMENTATION.
 
     TRY.
 
-*------ Get Application Log Key
-        request->get_uri_attribute( EXPORTING name = 'app_log_key' mandatory = abap_true
-                                    IMPORTING value = lv_app_log_key ).
-
-        "read application log
-"TODO
-
-        "transform application log to result (object based)
-
-
 *------ prepare response information
-        DATA(lt_result_table) = zcl_abapgit_operation_log=>get_result_table( ).
+        TYPES:
+          BEGIN OF t_obj_result,
+            obj_type   TYPE trobjtype,
+            obj_name   TYPE sobj_name,
+            obj_status TYPE symsgty,
+            package    TYPE devclass,
+            msg_type   TYPE symsgty,
+            msg_text   TYPE string,
+          END OF t_obj_result.
+        DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
 
 
         response->set_body_data(
@@ -90,9 +87,9 @@ CLASS ZCL_ABAPGIT_RES_REPO_OBJ_LOG IMPLEMENTATION.
         response->set_status( cl_rest_status_code=>gc_success_ok ).
 
 *---- Handle issues
-      CATCH zcx_abapgit_exception cx_a4c_logger cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
+      CATCH zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
         ROLLBACK WORK.
-        cx_adt_rest_abapgit=>raise_with_error(
+        zcx_adt_rest_abapgit=>raise_with_error(
             ix_error       = lx_exception
             iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
     ENDTRY.
