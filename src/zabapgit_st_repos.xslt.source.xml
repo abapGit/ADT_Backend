@@ -1,3 +1,38 @@
 <?sap.transform simple?>
 <tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/zcl_abapgit_res_repos" template="temp" version="0.1">
-  <tt:root name="REPOSITORIES" type="cl:tt_repo_w_lin
+  <tt:root name="REPOSITORIES" type="cl:tt_repo_w_links"/>
+  <tt:include name="SADT_ATOM" template="atomLink"/>
+  <tt:template name="temp">
+    <repositories>
+      <tt:loop ref=".REPOSITORIES">
+        <repository>
+          <key>
+            <tt:value ref="$ref.key"/>
+          </key>
+          <package>
+            <tt:value ref="$ref.package"/>
+          </package>
+          <url>
+            <tt:value ref="$ref.url"/>
+          </url>
+          <branch_name>
+            <tt:value ref="$ref.branch_name"/>
+          </branch_name>
+          <created_by>
+            <tt:value ref="$ref.created_by"/>
+          </created_by>
+          <created_at>
+            <tt:value ref="$ref.created_at"/>
+          </created_at>
+          <tt:cond check="exist($ref.links)">
+            <tt:cond check="not-initial($ref.links)">
+              <tt:apply name="atomLinks">
+                <tt:with-root name="atom_Links" ref="$ref.links"/>
+              </tt:apply>
+            </tt:cond>
+          </tt:cond>
+        </repository>
+      </tt:loop>
+    </repositories>
+  </tt:template>
+</tt:transform>
