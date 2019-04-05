@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/abapGit/ADT_Backend.svg?branch=master)](https://travis-ci.org/abapGit/ADT_Backend)
+[![Build Status](https://travis-ci.org/abapGit/ADT_Backend.svg?branch=master)](https://travis-ci.org/abapGit/ADT_Backend) [![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)](https://github.com/emersion/stability-badges#experimental)
 
 # ADT_Backend
 Backend implementation of ABAP Development Tools (ADT) REST endpoints. Prerequisite for using [abapGit repositories plugin](https://eclipse.abapgit.org/updatesite/) for ADT.
