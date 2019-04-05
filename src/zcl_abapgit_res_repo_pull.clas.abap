@@ -43,7 +43,7 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA mo_application_log TYPE REF TO if_a4c_logger .
+    " DATA mo_application_log TYPE REF TO if_a4c_logger .
 
     METHODS validate_request_data
       IMPORTING
@@ -67,6 +67,9 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
       lo_job_action    TYPE REF TO if_cbo_job_action.
 
     TRY.
+        " TODO: implement with valilla ABAPGIT
+        ZCX_ABAPGIT_EXCEPTION=>raise( 'Pull is not yet implemented' ).
+
 *------ Get Repository Key
         request->get_uri_attribute( EXPORTING name = 'key' mandatory = abap_true
                                     IMPORTING value = lv_repo_key ).
@@ -79,7 +82,7 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
                                   root_name    = co_root_name_pull
                                   content_type = co_content_type_repo_v1 ) ).
 
-        zcl_abapgit_operation_log=>clear( ).
+        " zcl_abapgit_operation_log=>clear( ).
 
 *------ Retrieve request data
         request->get_body_data(
@@ -165,11 +168,11 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
           content_type = co_content_type_object_v1 ).
 
 *------ prepare response information
-        DATA(lt_result_table) = zcl_abapgit_operation_log=>get_result_table( ).
+        " DATA(lt_result_table) = zcl_abapgit_operation_log=>get_result_table( ).
 
-        response->set_body_data(
-          content_handler = lo_resp_content_handler
-          data            = lt_result_table ).
+        " response->set_body_data(
+        "   content_handler = lo_resp_content_handler
+        "   data            = lt_result_table ).
 *OLD end
 
 *NEW start
@@ -177,9 +180,10 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 *NEW end
 
 *---- Handle issues
-      CATCH zcx_abapgit_exception zcx_abapgit_app_log cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
+*      CATCH zcx_abapgit_exception zcx_abapgit_app_log cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
+      CATCH zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
         ROLLBACK WORK.
-        cx_adt_rest_abapgit=>raise_with_error(
+        zcx_adt_rest_abapgit=>raise_with_error(
             ix_error       = lx_exception
             iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
     ENDTRY.
