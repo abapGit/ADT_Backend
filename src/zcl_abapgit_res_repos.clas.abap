@@ -166,7 +166,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 
   METHOD validate_request_data.
 
-    DATA: tr_check_required TYPE abap_boolean VALUE abap_true.
+    DATA: tr_check_required TYPE abap_bool VALUE abap_true.
 
     "check whether git url is well formed
     zcl_abapgit_url=>validate( |{ is_request_data-url }| ).

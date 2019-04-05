@@ -82,8 +82,17 @@ CLASS zcl_abapgit_res_repo_info_ext IMPLEMENTATION.
                                                        iv_password = ls_request_data-password ).
         ENDIF.
 
+        " Marcello Urbani: removed call due to syntax error.
+        " Planned to use a dynamic call but don't know the signature
+        " TODO: actually find out
         "Check whether passed repo URL has public or privated access
-        ls_response_data-access_mode = zcl_abapgit_http=>determine_access_level( ls_request_data-url ).
+        "ls_response_data-access_mode = zcl_abapgit_http=>determine_access_level( ls_request_data-url ).
+        IF  ls_request_data-user         IS NOT INITIAL AND
+            ls_request_data-password     IS NOT INITIAL.
+          ls_response_data-access_mode = 'PRIVATE'.
+        ELSE.
+          ls_response_data-access_mode = 'PUBLIC'.
+        ENDIF.
 
         "Retrieve list of branches for repo
         IF  ls_response_data-access_mode = 'PUBLIC'  OR
