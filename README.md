@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.org/abapGit/ADT_Backend.svg?branch=master)](https://travis-ci.org/abapGit/ADT_Backend)
 
 # ADT_Backend
-abapGit ADT Backend
+Backend implementation of ABAP Development Tools (ADT) REST endpoints. Prerequisite for using [abapGit repositories plugin](https://eclipse.abapgit.org/updatesite/) for ADT.
+
+__Highly Experimental__
 
 ### Requirements
 * abapGit development version installed
