@@ -65,9 +65,12 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
       <ls_warning_package>-decision = 'Y'.
     ENDLOOP.
 
+    DAta lo_log type ref to zcl_abapgit_log.
+    lo_log = new #( ).
+
     "Import objects
     ls_checks-transport-transport = is_request_data-transportrequest.
-    lo_repo->deserialize( ls_checks ).
+    lo_repo->deserialize( is_checks = ls_checks ii_log = lo_log ).
 
   ENDMETHOD.
 

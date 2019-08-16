@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOCLASS>
     <CLSNAME>ZCL_ABAPGIT_RES_REPO_PULL</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>Resource Controller for Repository Collection</DESCRIPT>
     <STATE>1</STATE>
@@ -13,14 +12,6 @@
     <UNICODE>X</UNICODE>
     <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_ABAPGIT_RES_REPO_PULL</CLSNAME>
-     <CMPNAME>MO_APPLICATION_LOG</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Logger Interface</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>
