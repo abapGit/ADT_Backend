@@ -6,7 +6,7 @@ INTERFACE lif_abapgit_provider.
     validate_package IMPORTING iv_package TYPE devclass
                      RAISING   zcx_abapgit_exception,
     is_tr_check_required IMPORTING iv_package TYPE devclass
-                         RETURNING VALUE(rv_is_required) TYPE abap_bool
+                         RETURNING VALUE(rv_is_required) TYPE abap_boolean
                          RAISING   zcx_abapgit_exception,
     list_repositories RETURNING VALUE(rt_list) TYPE zif_abapgit_definitions=>ty_repo_ref_tt
                       RAISING   zcx_abapgit_exception,

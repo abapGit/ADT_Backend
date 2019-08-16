@@ -20,13 +20,13 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
       END OF ty_request_pull_data.
     TYPES: BEGIN OF ty_repo_w_links.
              INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
-             TYPES:   links TYPE if_atom_types=>link_t.
+    TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
     TYPES:
       tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY.
 
     CONSTANTS co_class_name             TYPE seoclsname VALUE 'ZCL_ABAPGIT_RES_REPOS' ##NO_TEXT.
-    CONSTANTS co_resource_type          TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
+    CONSTANTS co_resource_type TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
     CONSTANTS co_st_name_pull           TYPE string     VALUE 'ZABAPGIT_ST_REPO_PULL' ##NO_TEXT.
     CONSTANTS co_st_name_post_res       TYPE string     VALUE 'ZABAPGIT_ST_REPO_POST_RES'.
     CONSTANTS co_root_name_pull         TYPE string     VALUE 'REPOSITORY' ##NO_TEXT.
@@ -43,7 +43,7 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    " DATA mo_application_log TYPE REF TO if_a4c_logger .
+*    DATA mo_application_log TYPE REF TO if_a4c_logger .
 
     METHODS validate_request_data
       IMPORTING
@@ -67,9 +67,8 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
       lo_job_action    TYPE REF TO if_cbo_job_action.
 
     TRY.
-        " TODO: implement with valilla ABAPGIT
-        ZCX_ABAPGIT_EXCEPTION=>raise( 'Pull is not yet implemented' ).
 
+    ZCX_ABAPGIT_EXCEPTION=>raise( 'Pull is not yet implemented' ).
 *------ Get Repository Key
         request->get_uri_attribute( EXPORTING name = 'key' mandatory = abap_true
                                     IMPORTING value = lv_repo_key ).
@@ -81,8 +80,6 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
                                   st_name      = co_st_name_pull
                                   root_name    = co_root_name_pull
                                   content_type = co_content_type_repo_v1 ) ).
-
-        " zcl_abapgit_operation_log=>clear( ).
 
 *------ Retrieve request data
         request->get_body_data(
@@ -158,8 +155,11 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 
         ls_checks-transport-transport = ls_request_data-transportrequest.
 
+       DATA lo_log type ref to zcl_abapgit_log.
+       lo_log = new #( ).
+
 *------ Import Objects
-        lo_repo->deserialize( is_checks = ls_checks ).
+        lo_repo->deserialize( is_checks = ls_checks ii_log = lo_log ).
 
         "response content handler
         DATA(lo_resp_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
@@ -168,11 +168,20 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
           content_type = co_content_type_object_v1 ).
 
 *------ prepare response information
-        " DATA(lt_result_table) = zcl_abapgit_operation_log=>get_result_table( ).
+        TYPES:
+          BEGIN OF t_obj_result,
+            obj_type   TYPE trobjtype,
+            obj_name   TYPE sobj_name,
+            obj_status TYPE symsgty,
+            package    TYPE devclass,
+            msg_type   TYPE symsgty,
+            msg_text   TYPE string,
+          END OF t_obj_result.
+        DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
 
-        " response->set_body_data(
-        "   content_handler = lo_resp_content_handler
-        "   data            = lt_result_table ).
+        response->set_body_data(
+          content_handler = lo_resp_content_handler
+          data            = lt_result_table ).
 *OLD end
 
 *NEW start
@@ -180,7 +189,6 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 *NEW end
 
 *---- Handle issues
-*      CATCH zcx_abapgit_exception zcx_abapgit_app_log cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
       CATCH zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
         ROLLBACK WORK.
         zcx_adt_rest_abapgit=>raise_with_error(
