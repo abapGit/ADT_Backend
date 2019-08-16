@@ -18,15 +18,16 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
         user             TYPE string,
         password         TYPE string,
       END OF ty_request_pull_data.
-    TYPES: BEGIN OF ty_repo_w_links.
-             INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
+    TYPES:
+      BEGIN OF ty_repo_w_links.
+            INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
     TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
     TYPES:
       tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY.
 
     CONSTANTS co_class_name             TYPE seoclsname VALUE 'ZCL_ABAPGIT_RES_REPOS' ##NO_TEXT.
-    CONSTANTS co_resource_type TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
+    CONSTANTS co_resource_type          TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
     CONSTANTS co_st_name_pull           TYPE string     VALUE 'ZABAPGIT_ST_REPO_PULL' ##NO_TEXT.
     CONSTANTS co_st_name_post_res       TYPE string     VALUE 'ZABAPGIT_ST_REPO_POST_RES'.
     CONSTANTS co_root_name_pull         TYPE string     VALUE 'REPOSITORY' ##NO_TEXT.
@@ -42,8 +43,6 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-
-*    DATA mo_application_log TYPE REF TO if_a4c_logger .
 
     METHODS validate_request_data
       IMPORTING
@@ -68,7 +67,7 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 
     TRY.
 
-    ZCX_ABAPGIT_EXCEPTION=>raise( 'Pull is not yet implemented' ).
+        zcx_abapgit_exception=>raise( 'Pull is not yet implemented' ).
 *------ Get Repository Key
         request->get_uri_attribute( EXPORTING name = 'key' mandatory = abap_true
                                     IMPORTING value = lv_repo_key ).
@@ -155,8 +154,8 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 
         ls_checks-transport-transport = ls_request_data-transportrequest.
 
-       DATA lo_log type ref to zcl_abapgit_log.
-       lo_log = new #( ).
+        DATA lo_log TYPE REF TO zcl_abapgit_log.
+        lo_log = NEW #( ).
 
 *------ Import Objects
         lo_repo->deserialize( is_checks = ls_checks ii_log = lo_log ).
@@ -210,7 +209,8 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 *    "check whether git url is already used
 *    DATA(lt_repo_list) = zcl_abapgit_repo_srv=>get_instance( )->list( ).
 *    LOOP AT lt_repo_list ASSIGNING FIELD-SYMBOL(<ls_repo_list>).
-*      IF cl_http_utility=>if_http_utility~unescape_url( zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
+*      IF cl_http_utility=>if_http_utility~unescape_url(
+*          zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
 *        MESSAGE e002(A4C_AGIT_ADT) WITH is_request_data-url <ls_repo_list>->get_package( ) INTO DATA(lv_msg).
 *        zcx_abapgit_exception=>raise_t100( ).
 *      ENDIF.
