@@ -138,7 +138,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
     lo_atom_util->append_link(
       EXPORTING
         rel  = lc_rel_pull
-        href = |{ co_root_path }/repos/{ iv_repo_key }/pull|
+        href = |{ lc_root_path }/repos/{ iv_repo_key }/pull|
       CHANGING
         links = rt_links ).
 
@@ -152,13 +152,13 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 
     CASE ls_requested_content_type.
       WHEN co_content_type_repo_v1.
-        me->post_v1( request  = request
-                     response = response
-                     context  = context ).
+        me->post_v1( iv_request  = request
+                     iv_response = response
+                     iv_context  = context ).
       WHEN co_content_type_repo_v2.
-        me->post_v2( request  = request
-                     response = response
-                     context  = context ).
+        me->post_v2( iv_request  = request
+                     iv_response = response
+                     iv_context  = context ).
       WHEN OTHERS.
         response->set_status( cl_rest_status_code=>gc_client_error_bad_request ).
     ENDCASE.
@@ -181,7 +181,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
     LOOP AT lt_repo_list ASSIGNING FIELD-SYMBOL(<ls_repo_list>).
       IF cl_http_utility=>if_http_utility~unescape_url(
         zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
-        MESSAGE e002(a4c_agit_adt) WITH is_request_data-url <ls_repo_list>->get_package( ) INTO DATA(lv_msg).
+        MESSAGE e002(za4c_agit_adt) WITH is_request_data-url <ls_repo_list>->get_package( ) INTO DATA(lv_msg).
         zcx_abapgit_exception=>raise_t100( ).
       ENDIF.
     ENDLOOP.
@@ -209,7 +209,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
     " Wrap the request content handler in a cl_adt_rest_comp_cnt_handler
     " in order to ensure that the client sends a correct 'Content-Type:' header
     DATA(lo_request_content_handler) = cl_adt_rest_comp_cnt_handler=>create(
-        request         = request
+        request         = iv_request
         content_handler = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
                               st_name      = co_st_name_post
                               root_name    = co_root_name_post
@@ -245,7 +245,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
                                IMPORTING data            = lt_request_data ).
 
     IF lt_request_data IS INITIAL.
-      response->set_status( cl_rest_status_code=>gc_client_error_bad_request ).
+      iv_response->set_status( cl_rest_status_code=>gc_client_error_bad_request ).
       RETURN.
     ENDIF.
 
@@ -321,7 +321,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
       content_type = co_content_type_object_v1 ).
 
     " TODO fill lt_result_table
-    response->set_body_data(
+    iv_response->set_body_data(
       content_handler = lo_resp_content_handler
       data            = lt_result_table ).
 
