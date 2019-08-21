@@ -36,7 +36,10 @@ CLASS zcl_abapgit_res_repos_app IMPLEMENTATION.
 
     registry->register_discoverable_resource(
         url             = '/repos'
-        accepted_types  = VALUE #( ( |'application/abapgit.adt.repo.v1+xml'| ) ( |'application/abapgit.adt.repo.v2+xml'| ) ) "zcl_abapgit_res_repos=>co_content_type_repo_v1/2
+        accepted_types  = VALUE #(
+                                    ( |'application/abapgit.adt.repo.v1+xml'| )
+                                    ( |'application/abapgit.adt.repo.v2+xml'| )
+                                 ) "zcl_abapgit_res_repos=>co_content_type_repo_v1/2
         handler_class   = 'ZCL_ABAPGIT_RES_REPOS'
         description     = 'Repositories'(002)
         category_scheme = 'http://www.sap.com/adt/categories/abapgit'
@@ -44,7 +47,9 @@ CLASS zcl_abapgit_res_repos_app IMPLEMENTATION.
 
     registry->register_discoverable_resource(
         url             = '/externalrepoinfo'
-        accepted_types  = VALUE #( ( |application/abapgit.adt.repo.info.ext.request.v1+xml| ) ) "zcl_abapgit_res_repo_info_ext=>co_content_type_request_v1
+        accepted_types  = VALUE #(
+                                    ( |application/abapgit.adt.repo.info.ext.request.v1+xml| )
+                                 ) "zcl_abapgit_res_repo_info_ext=>co_content_type_request_v1
         handler_class   = 'ZCL_ABAPGIT_RES_REPO_INFO_EXT'
         description     = 'External Repository Info'(003)
         category_scheme = 'http://www.sap.com/adt/categories/abapgit'

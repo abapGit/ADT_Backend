@@ -1,8 +1,5 @@
 *"* use this source file for your ABAP unit test classes
 
-*CLASS ltcl_simple_transformation DEFINITION DEFERRED.
-*CLASS zcl_abapgit_res_repos DEFINITION LOCAL FRIENDS ltcl_simple_transformation.
-
 CLASS ltcl_simple_transformation DEFINITION FINAL FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS.
@@ -183,43 +180,53 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD repo_v2_deserialize_ok.
-    DATA: xml_data        TYPE string,
-          repository_data TYPE zcl_abapgit_res_repos=>tt_request_data.
+    DATA: lv_xml_data        TYPE string,
+          lv_repository_data TYPE zcl_abapgit_res_repos=>tt_request_data.
 
-    xml_data = xml_data && |<?xml version="1.0" encoding="UTF-8"?><repositories>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |  <repository>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |    <branch>refs/heads/master</branch>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |    <package>TEST_YY</package>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |    <url>https://github.com/Wunderfitz/yy.git</url>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |  </repository>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |  <repository>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |    <branch>refs/heads/master</branch>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |    <package>TEST_LOGGER</package>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |    <url>https://github.com/epeterson320/ABAP-Logger.git</url>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |  </repository>| && cl_abap_char_utilities=>newline.
-    xml_data = xml_data && |</repositories>|.
+    lv_xml_data = lv_xml_data && |<?xml version="1.0" encoding="UTF-8"?><repositories>|.
+    lv_xml_data = lv_xml_data && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |  <repository>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |    <branch>refs/heads/master</branch>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |    <package>TEST_YY</package>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |    <url>https://github.com/Wunderfitz/yy.git</url>|.
+    lv_xml_data = lv_xml_data && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |  </repository>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |  <repository>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |    <branch>refs/heads/master</branch>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |    <package>TEST_LOGGER</package>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |    <url>https://github.com/epeterson320/ABAP-Logger.git</url>|.
+    lv_xml_data = lv_xml_data && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |  </repository>| && cl_abap_char_utilities=>newline.
+    lv_xml_data = lv_xml_data && |</repositories>|.
 
     CALL TRANSFORMATION zabapgit_st_repo_post_v2
-      SOURCE XML xml_data
-      RESULT repositories = repository_data.
+      SOURCE XML lv_xml_data
+      RESULT repositories = lv_repository_data.
 
-    cl_abap_unit_assert=>assert_not_initial( repository_data ).
-    cl_abap_unit_assert=>assert_equals( exp = 2 act = lines( repository_data ) ).
+    cl_abap_unit_assert=>assert_not_initial( lv_repository_data ).
+    cl_abap_unit_assert=>assert_equals( exp = 2 act = lines( lv_repository_data ) ).
   ENDMETHOD.
 
   METHOD repo_v2_serialize_ok.
-    DATA: repository_data TYPE zcl_abapgit_res_repos=>tt_request_data,
-          xml_data        TYPE string.
+    DATA: lv_repository_data TYPE zcl_abapgit_res_repos=>tt_request_data,
+          lv_xml_data        TYPE string.
 
-    repository_data = VALUE #( ( url = 'https://github.com/Wunderfitz/yy.git' branch = 'refs/heads/master' package = 'TEST_YY' )
-                               ( url = 'https://github.com/epeterson320/ABAP-Logger.git' branch = 'refs/heads/master' package = 'TEST_LOGGER' ) ).
+    lv_repository_data = VALUE #( (
+                                  url = 'https://github.com/Wunderfitz/yy.git'
+                                  branch = 'refs/heads/master'
+                                  package = 'TEST_YY'
+                                )
+                                (
+                                  url = 'https://github.com/epeterson320/ABAP-Logger.git'
+                                  branch = 'refs/heads/master'
+                                  package = 'TEST_LOGGER' ) ).
 
     CALL TRANSFORMATION zabapgit_st_repo_post_v2
-      SOURCE repositories = repository_data
-      RESULT XML xml_data.
+      SOURCE repositories = lv_repository_data
+      RESULT XML lv_xml_data.
 
-    cl_abap_unit_assert=>assert_not_initial( xml_data ).
-    cl_abap_unit_assert=>assert_true( boolc( xml_data CS '<package>TEST_YY</package>' ) ).
+    cl_abap_unit_assert=>assert_not_initial( lv_xml_data ).
+    cl_abap_unit_assert=>assert_true( boolc( lv_xml_data CS '<package>TEST_YY</package>' ) ).
 
   ENDMETHOD.
 
@@ -298,26 +305,36 @@ CLASS ltcl_abapgit_repos_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD no_content_type_header.
-    me->abapgit_repos_resource->post( EXPORTING request  = me->request_stub
-                                                response = me->response_spy ).
+    me->abapgit_repos_resource->post( request  = me->request_stub
+                                      response = me->response_spy ).
 
-    cl_abap_unit_assert=>assert_equals( exp = cl_rest_status_code=>gc_client_error_bad_request act = me->response_spy->get_status( ) ).
+    cl_abap_unit_assert=>assert_equals( exp = cl_rest_status_code=>gc_client_error_bad_request
+                                        act = me->response_spy->get_status( ) ).
   ENDMETHOD.
 
   METHOD standard_v2.
 
-    me->request_stub->add_header_field( EXPORTING key   = if_http_header_fields=>content_type
-                                                  value = zcl_abapgit_res_repos=>co_content_type_repo_v2 ).
+    me->request_stub->add_header_field( key   = if_http_header_fields=>content_type
+                                        value = zcl_abapgit_res_repos=>co_content_type_repo_v2 ).
 
-    me->request_data_v2 = VALUE #( ( url = 'https://github.com/Wunderfitz/jak.git' branch = 'refs/heads/master' package = 'TESCHD_JAK' )
-                                   ( url = 'https://github.com/Wunderfitz/yy.git' branch = 'refs/heads/master' package = 'TESCHD_YY' ) ).
+    me->request_data_v2 = VALUE #( (
+                                      url = 'https://github.com/Wunderfitz/jak.git'
+                                      branch = 'refs/heads/master'
+                                      package = 'TESCHD_JAK'
+                                    )
+                                    (
+                                      url = 'https://github.com/Wunderfitz/yy.git'
+                                      branch = 'refs/heads/master'
+                                      package = 'TESCHD_YY'
+                                    ) ).
 
     me->request_stub->set_body_data( data = me->request_data_v2 ).
 
-    me->abapgit_repos_resource->post( EXPORTING request  = me->request_stub
-                                                response = me->response_spy ).
+    me->abapgit_repos_resource->post( request  = me->request_stub
+                                      response = me->response_spy ).
 
-    cl_abap_unit_assert=>assert_equals( exp = cl_rest_status_code=>gc_success_created act = me->response_spy->get_status( ) ).
+    cl_abap_unit_assert=>assert_equals( exp = cl_rest_status_code=>gc_success_created
+                                        act = me->response_spy->get_status( ) ).
 
   ENDMETHOD.
 

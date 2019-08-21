@@ -63,7 +63,8 @@ CLASS zcl_abapgit_res_repo_obj_log IMPLEMENTATION.
          content_type = co_content_type_object_v1 ).
 
     "validation of request 'Accept:' header
-    cl_adt_rest_comp_cnt_handler=>create( request = request content_handler = lo_resp_content_handler )->check_cnt_type_is_supported( ).
+    cl_adt_rest_comp_cnt_handler=>create( request = request
+                                          content_handler = lo_resp_content_handler )->check_cnt_type_is_supported( ).
 
     TRY.
 
@@ -108,7 +109,8 @@ CLASS zcl_abapgit_res_repo_obj_log IMPLEMENTATION.
 *    "check whether git url is already used
 *    DATA(lt_repo_list) = zcl_abapgit_repo_srv=>get_instance( )->list( ).
 *    LOOP AT lt_repo_list ASSIGNING FIELD-SYMBOL(<ls_repo_list>).
-*      IF cl_http_utility=>if_http_utility~unescape_url( zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
+*      IF cl_http_utility=>if_http_utility~unescape_url(
+*               zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
 *        MESSAGE e002(A4C_AGIT_ADT) WITH is_request_data-url <ls_repo_list>->get_package( ) INTO DATA(lv_msg).
 *        zcx_abapgit_exception=>raise_t100( ).
 *      ENDIF.

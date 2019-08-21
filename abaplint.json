@@ -62,7 +62,7 @@
       "exclude": []
     },
     "functional_writing": {
-      "enabled": true,
+      "enabled": false,
       "exclude": [],
       "ignoreExceptions": true
     },

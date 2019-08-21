@@ -51,7 +51,7 @@ CLASS zcl_abapgit_res_repos DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA: abapgit_provider TYPE REF TO lif_abapgit_provider.
+    DATA: mv_abapgit_provider TYPE REF TO lif_abapgit_provider.
 
     METHODS validate_request_data
       IMPORTING
@@ -64,17 +64,17 @@ CLASS zcl_abapgit_res_repos DEFINITION
       RETURNING
         VALUE(rt_links) TYPE if_atom_types=>link_t.
     METHODS:
-      post_v1  IMPORTING request  TYPE REF TO if_adt_rest_request
-                         response TYPE REF TO if_adt_rest_response
-                         context  TYPE REF TO if_rest_context OPTIONAL
+      post_v1  IMPORTING iv_request  TYPE REF TO if_adt_rest_request
+                         iv_response TYPE REF TO if_adt_rest_response
+                         iv_context  TYPE REF TO if_rest_context OPTIONAL
                RAISING   cx_adt_rest,
-      post_v2  IMPORTING request  TYPE REF TO if_adt_rest_request
-                         response TYPE REF TO if_adt_rest_response
-                         context  TYPE REF TO if_rest_context OPTIONAL
+      post_v2  IMPORTING iv_request  TYPE REF TO if_adt_rest_request
+                         iv_response TYPE REF TO if_adt_rest_response
+                         iv_context  TYPE REF TO if_rest_context OPTIONAL
                RAISING   cx_adt_rest,
       import_repository IMPORTING is_request_data TYPE ty_request_data
                         RAISING   zcx_adt_rest_abapgit,
-      set_import_response_data IMPORTING response TYPE REF TO if_adt_rest_response
+      set_import_response_data IMPORTING iv_response TYPE REF TO if_adt_rest_response
                                RAISING   cx_adt_rest,
       set_abapgit_provider IMPORTING io_abapgit_provider TYPE REF TO lif_abapgit_provider.
 
@@ -96,7 +96,8 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
           content_type = co_content_type_repos_v1 ).
 
     "validation of request 'Accept:' header
-    cl_adt_rest_comp_cnt_handler=>create( request = request content_handler = lo_resp_content_handler )->check_cnt_type_is_supported( ).
+    cl_adt_rest_comp_cnt_handler=>create( request = request
+                                          content_handler = lo_resp_content_handler )->check_cnt_type_is_supported( ).
 
     TRY.
         DATA(li_repo) = zcl_abapgit_persist_factory=>get_repo( ).
@@ -129,15 +130,15 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
   METHOD get_links.
 
     CONSTANTS:
-      co_rel_pull  TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/pull',
-      co_root_path TYPE string VALUE '/sap/bc/adt/abapgit'. "todo: extract
+      lc_rel_pull  TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/pull',
+      lc_root_path TYPE string VALUE '/sap/bc/adt/abapgit'. "todo: extract
 
     DATA(lo_atom_util) = cl_adt_atom_utility=>create_instance( ).
 
     lo_atom_util->append_link(
       EXPORTING
-        rel  = co_rel_pull
-        href = |{ co_root_path }/repos/{ iv_repo_key }/pull|
+        rel  = lc_rel_pull
+        href = |{ lc_root_path }/repos/{ iv_repo_key }/pull|
       CHANGING
         links = rt_links ).
 
@@ -146,17 +147,18 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 
   METHOD post.
 
-    DATA(ls_requested_content_type) = request->get_inner_rest_request( )->get_header_field( iv_name = if_http_header_fields=>content_type ).
+    DATA(ls_requested_content_type) = request->get_inner_rest_request( )->get_header_field(
+      iv_name = if_http_header_fields=>content_type ).
 
     CASE ls_requested_content_type.
       WHEN co_content_type_repo_v1.
-        me->post_v1( EXPORTING request  = request
-                               response = response
-                               context  = context ).
+        me->post_v1( iv_request  = request
+                     iv_response = response
+                     iv_context  = context ).
       WHEN co_content_type_repo_v2.
-        me->post_v2( EXPORTING request  = request
-                               response = response
-                               context  = context ).
+        me->post_v2( iv_request  = request
+                     iv_response = response
+                     iv_context  = context ).
       WHEN OTHERS.
         response->set_status( cl_rest_status_code=>gc_client_error_bad_request ).
     ENDCASE.
@@ -166,31 +168,34 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 
   METHOD validate_request_data.
 
-    DATA: tr_check_required TYPE abap_boolean VALUE abap_true.
+    DATA: lv_tr_check_required TYPE abap_boolean VALUE abap_true.
 
     "check whether git url is well formed
     zcl_abapgit_url=>validate( |{ is_request_data-url }| ).
 
     "check whether package is already used
-    me->abapgit_provider->validate_package( iv_package = CONV #( is_request_data-package ) ).
+    me->mv_abapgit_provider->validate_package( iv_package = CONV #( is_request_data-package ) ).
 
     "check whether git url is already used
-    DATA(lt_repo_list) = me->abapgit_provider->list_repositories( ).
+    DATA(lt_repo_list) = me->mv_abapgit_provider->list_repositories( ).
     LOOP AT lt_repo_list ASSIGNING FIELD-SYMBOL(<ls_repo_list>).
-      IF cl_http_utility=>if_http_utility~unescape_url( zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
-        MESSAGE e002(a4c_agit_adt) WITH is_request_data-url <ls_repo_list>->get_package( ) INTO DATA(lv_msg).
+      IF cl_http_utility=>if_http_utility~unescape_url(
+        zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
+        MESSAGE e002(za4c_agit_adt) WITH is_request_data-url <ls_repo_list>->get_package( ) INTO DATA(lv_msg).
         zcx_abapgit_exception=>raise_t100( ).
       ENDIF.
     ENDLOOP.
 
     " Transport request check is only required if recording is switched on for current package
     IF is_request_data-transportrequest IS INITIAL.
-      tr_check_required = me->abapgit_provider->is_tr_check_required( iv_package = CONV #( is_request_data-package ) ).
+      lv_tr_check_required = me->mv_abapgit_provider->is_tr_check_required(
+        iv_package = CONV #( is_request_data-package ) ).
     ENDIF.
 
-    IF tr_check_required = abap_true.
+    IF lv_tr_check_required = abap_true.
       " transport request exists
-      me->abapgit_provider->validate_transport_request( iv_transport_request = CONV #( is_request_data-transportrequest ) ).
+      me->mv_abapgit_provider->validate_transport_request(
+        iv_transport_request = CONV #( is_request_data-transportrequest ) ).
     ENDIF.
 
   ENDMETHOD.
@@ -198,20 +203,20 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
   METHOD post_v1.
 
     DATA:
-      ls_request_data TYPE ty_request_data,
-      result_request  TYPE sadt_status_message.
+      ls_request_data TYPE ty_request_data.
 
-    "Content Handler
-    "Wrap the request content handler in a cl_adt_rest_comp_cnt_handler in order to ensure that the client sends a correct 'Content-Type:' header
+    " Content Handler
+    " Wrap the request content handler in a cl_adt_rest_comp_cnt_handler
+    " in order to ensure that the client sends a correct 'Content-Type:' header
     DATA(lo_request_content_handler) = cl_adt_rest_comp_cnt_handler=>create(
-        request         = request
+        request         = iv_request
         content_handler = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
                               st_name      = co_st_name_post
                               root_name    = co_root_name_post
                               content_type = co_content_type_repo_v1 ) ).
 
     "Retrieve request data
-    request->get_body_data(
+    iv_request->get_body_data(
       EXPORTING
         content_handler = lo_request_content_handler
       IMPORTING
@@ -220,49 +225,49 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
     me->import_repository( is_request_data = ls_request_data ).
 
     "[A4C_AGIT_LOG]
-    me->set_import_response_data( response ).
+    me->set_import_response_data( iv_response ).
 
-    response->set_status( cl_rest_status_code=>gc_success_ok ).
+    iv_response->set_status( cl_rest_status_code=>gc_success_ok ).
 
   ENDMETHOD.
 
   METHOD post_v2.
 
-    DATA: request_data TYPE tt_request_data.
+    DATA: lt_request_data TYPE tt_request_data.
 
-    DATA(adt_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st( st_name      = co_st_name_post_v2
+    DATA(lo_adt_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st( st_name      = co_st_name_post_v2
                                                                                                             root_name    = co_root_name_post_v2
                                                                                                             content_type = co_content_type_repo_v2 ).
-    DATA(request_content_handler) = cl_adt_rest_comp_cnt_handler=>create( request         = request
-                                                                          content_handler = adt_content_handler ).
+    DATA(lo_request_content_handler) = cl_adt_rest_comp_cnt_handler=>create( request         = iv_request
+                                                                             content_handler = lo_adt_content_handler ).
 
-    request->get_body_data( EXPORTING content_handler = request_content_handler
-                            IMPORTING data            = request_data ).
+    iv_request->get_body_data( EXPORTING content_handler = lo_request_content_handler
+                               IMPORTING data            = lt_request_data ).
 
-    IF request_data IS INITIAL.
-      response->set_status( cl_rest_status_code=>gc_client_error_bad_request ).
+    IF lt_request_data IS INITIAL.
+      iv_response->set_status( cl_rest_status_code=>gc_client_error_bad_request ).
       RETURN.
     ENDIF.
 
-    LOOP AT request_data INTO DATA(single_repository).
+    LOOP AT lt_request_data INTO DATA(single_repository).
       me->import_repository( is_request_data = single_repository ).
     ENDLOOP.
 
     "[A4C_AGIT_LOG]
-    me->set_import_response_data( response ).
+    me->set_import_response_data( iv_response ).
 
-    response->set_status( cl_rest_status_code=>gc_success_created ).
+    iv_response->set_status( cl_rest_status_code=>gc_success_created ).
 
   ENDMETHOD.
 
   METHOD set_abapgit_provider.
-    me->abapgit_provider = io_abapgit_provider.
+    me->mv_abapgit_provider = io_abapgit_provider.
   ENDMETHOD.
 
   METHOD constructor.
 
     super->constructor( ).
-    CREATE OBJECT me->abapgit_provider TYPE lcl_abapgit_provider.
+    CREATE OBJECT me->mv_abapgit_provider TYPE lcl_abapgit_provider.
 
   ENDMETHOD.
 
@@ -273,11 +278,11 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 
         "Set log-on information if supplied
         IF is_request_data-user IS NOT INITIAL AND is_request_data-password IS NOT INITIAL.
-          me->abapgit_provider->set_authentication_info( iv_user     = is_request_data-user
+          me->mv_abapgit_provider->set_authentication_info( iv_user     = is_request_data-user
                                                          iv_password = is_request_data-password ).
         ENDIF.
 
-        me->abapgit_provider->perform_import( is_request_data = is_request_data ).
+        me->mv_abapgit_provider->perform_import( is_request_data = is_request_data ).
 
         "Handle Issues
       CATCH zcx_abapgit_exception INTO DATA(lx_abapgit_exception).
@@ -297,12 +302,6 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD set_import_response_data.
-
-    "Response Content Handler
-    DATA(lo_resp_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
-      st_name      = co_st_name_post_res
-      root_name    = co_root_name_post_res
-      content_type = co_content_type_object_v1 ).
     TYPES:
       BEGIN OF t_obj_result,
         obj_type   TYPE trobjtype,
@@ -312,10 +311,17 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
         msg_type   TYPE symsgty,
         msg_text   TYPE string,
       END OF t_obj_result.
+
     DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
 
+    "Response Content Handler
+    DATA(lo_resp_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
+      st_name      = co_st_name_post_res
+      root_name    = co_root_name_post_res
+      content_type = co_content_type_object_v1 ).
+
     " TODO fill lt_result_table
-    response->set_body_data(
+    iv_response->set_body_data(
       content_handler = lo_resp_content_handler
       data            = lt_result_table ).
 

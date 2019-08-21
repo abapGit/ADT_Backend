@@ -40,6 +40,8 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
 
   METHOD lif_abapgit_provider~perform_import.
 
+    DATA lo_log TYPE REF TO zcl_abapgit_log.
+
     "Set the default transport request
     IF is_request_data-transportrequest IS NOT INITIAL.
       zcl_abapgit_default_transport=>get_instance( )->set( CONV #( is_request_data-transportrequest ) ).
@@ -65,8 +67,7 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
       <ls_warning_package>-decision = 'Y'.
     ENDLOOP.
 
-    DAta lo_log type ref to zcl_abapgit_log.
-    lo_log = new #( ).
+    lo_log = NEW #( ).
 
     "Import objects
     ls_checks-transport-transport = is_request_data-transportrequest.
