@@ -1,9 +1,22 @@
 {
   "global": {
-    "version": "v740sp08",
+    "files": "/src/**/*.*",
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true
+  },
+  "dependencies": [
+    {
+      "url": "https://github.com/abaplint/deps",
+      "folder": "/deps",
+      "files": "/src/**/*.*"
+    }
+  ],  
+  "syntax": {
+    "version": "v740sp08",
+    "errorNamespace": "^(Z|Y)",
+    "globalConstants": [],
+    "globalMacros": []
   },
   "rules": {
     "7bit_ascii": {
