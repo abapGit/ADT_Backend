@@ -168,7 +168,7 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 
   METHOD validate_request_data.
 
-    DATA: lv_tr_check_required TYPE abap_boolean VALUE abap_true.
+    DATA: lv_tr_check_required TYPE abap_bool VALUE abap_true.
 
     "check whether git url is well formed
     zcl_abapgit_url=>validate( |{ is_request_data-url }| ).
@@ -235,9 +235,10 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
 
     DATA: lt_request_data TYPE tt_request_data.
 
-    DATA(lo_adt_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st( st_name      = co_st_name_post_v2
-                                                                                                            root_name    = co_root_name_post_v2
-                                                                                                            content_type = co_content_type_repo_v2 ).
+    DATA(lo_adt_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
+      st_name      = co_st_name_post_v2
+      root_name    = co_root_name_post_v2
+      content_type = co_content_type_repo_v2 ).
     DATA(lo_request_content_handler) = cl_adt_rest_comp_cnt_handler=>create( request         = iv_request
                                                                              content_handler = lo_adt_content_handler ).
 
