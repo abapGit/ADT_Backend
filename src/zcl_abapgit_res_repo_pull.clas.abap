@@ -54,7 +54,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
 
 
   METHOD post.
@@ -135,7 +135,9 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
         ENDIF.
 
 *------ Set the default transport request
-        zcl_abapgit_default_transport=>get_instance( )->set( CONV #( ls_request_data-transportrequest ) ).
+        if ls_request_data-transportrequest <> ''.
+          zcl_abapgit_default_transport=>get_instance( )->set( CONV #( ls_request_data-transportrequest ) ).
+        endif.
 
 *------ Create online repo
         DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
