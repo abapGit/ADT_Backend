@@ -58,13 +58,22 @@ CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
 
 
   METHOD post.
-
+    TYPES:
+          BEGIN OF t_obj_result,
+            obj_type   TYPE trobjtype,
+            obj_name   TYPE sobj_name,
+            obj_status TYPE symsgty,
+            package    TYPE devclass,
+            msg_type   TYPE symsgty,
+            msg_text   TYPE string,
+          END OF t_obj_result.
+    DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
     DATA:
       ls_request_data  TYPE ty_request_pull_data,
-      result_request   TYPE sadt_status_message,
       lv_repo_key      TYPE zif_abapgit_persistence=>ty_value,
       lo_job_scheduler TYPE REF TO if_cbo_job_scheduler,
       lo_job_action    TYPE REF TO if_cbo_job_action.
+    DATA lo_log TYPE REF TO zcl_abapgit_log.
 
     TRY.
 
@@ -135,9 +144,9 @@ CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
         ENDIF.
 
 *------ Set the default transport request
-        if ls_request_data-transportrequest <> ''.
+        IF ls_request_data-transportrequest <> ''.
           zcl_abapgit_default_transport=>get_instance( )->set( CONV #( ls_request_data-transportrequest ) ).
-        endif.
+        ENDIF.
 
 *------ Create online repo
         DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
@@ -156,7 +165,6 @@ CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
 
         ls_checks-transport-transport = ls_request_data-transportrequest.
 
-        DATA lo_log TYPE REF TO zcl_abapgit_log.
         lo_log = NEW #( ).
 
 *------ Import Objects
@@ -169,17 +177,6 @@ CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
           content_type = co_content_type_object_v1 ).
 
 *------ prepare response information
-        TYPES:
-          BEGIN OF t_obj_result,
-            obj_type   TYPE trobjtype,
-            obj_name   TYPE sobj_name,
-            obj_status TYPE symsgty,
-            package    TYPE devclass,
-            msg_type   TYPE symsgty,
-            msg_text   TYPE string,
-          END OF t_obj_result.
-        DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
-
         response->set_body_data(
           content_handler = lo_resp_content_handler
           data            = lt_result_table ).
