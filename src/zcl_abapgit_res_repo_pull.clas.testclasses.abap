@@ -1,4 +1,7 @@
 *"* use this source file for your ABAP unit test classes
+DEFINE add_xml.
+  CONCATENATE lv_xml &1 INTO lv_xml.
+END-OF-DEFINITION. "#EC NEEDED
 
 CLASS ltcl_simple_transformation DEFINITION FINAL FOR TESTING
   DURATION SHORT
