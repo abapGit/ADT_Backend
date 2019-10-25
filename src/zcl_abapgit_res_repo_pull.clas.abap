@@ -20,7 +20,7 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
       END OF ty_request_pull_data.
     TYPES:
       BEGIN OF ty_repo_w_links.
-            INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
+        INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
     TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
     TYPES:
@@ -47,27 +47,36 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
     METHODS validate_request_data
       IMPORTING
         !is_request_data TYPE ty_request_pull_data
+        iv_repo_key      TYPE zif_abapgit_persistence=>ty_value
       RAISING
         zcx_abapgit_exception .
 ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
 
 
   METHOD post.
-
+    TYPES:
+          BEGIN OF t_obj_result,
+            obj_type   TYPE trobjtype,
+            obj_name   TYPE sobj_name,
+            obj_status TYPE symsgty,
+            package    TYPE devclass,
+            msg_type   TYPE symsgty,
+            msg_text   TYPE string,
+          END OF t_obj_result.
+    DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
     DATA:
       ls_request_data  TYPE ty_request_pull_data,
-      result_request   TYPE sadt_status_message,
       lv_repo_key      TYPE zif_abapgit_persistence=>ty_value,
       lo_job_scheduler TYPE REF TO if_cbo_job_scheduler,
       lo_job_action    TYPE REF TO if_cbo_job_action.
+    DATA lo_log TYPE REF TO zcl_abapgit_log.
 
     TRY.
 
-        zcx_abapgit_exception=>raise( 'Pull is not yet implemented' ).
 *------ Get Repository Key
         request->get_uri_attribute( EXPORTING name = 'key' mandatory = abap_true
                                     IMPORTING value = lv_repo_key ).
@@ -87,8 +96,8 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
           IMPORTING
             data            = ls_request_data ).
 
-*        "Prerequisite check for request values
-*        validate_request_data( ls_request_data ).
+        "Prerequisite check for request values
+        validate_request_data( is_request_data = ls_request_data iv_repo_key = lv_repo_key ).
 
 *NEW start
 **------ Create new application logger object
@@ -107,19 +116,19 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 *        ls_alog_key-app_log  = lo_log->get_data( )-app_log.
 *
 **------ Execute background job
-*        lo_job_scheduler = NEW cl_cbo_job_scheduler( ).
+        " lo_job_scheduler = NEW cl_cbo_job_scheduler( ).
 *
-*        lo_job_action = NEW zcl_abapgit_repo_pull_action(
-*          is_alog_key = ls_alog_key
-*          iv_repo_key = lv_repo_key
-*          is_req_data = ls_request_data ).
+        "  lo_job_action = NEW zcl_abapgit_repo_pull_action(
+        "     is_alog_key = ls_alog_key
+        "     iv_repo_key = lv_repo_key
+        "     is_req_data = ls_request_data ).
 *
 *        "create new job from action
-*        lo_job_scheduler->start_job(
-*          EXPORTING
-*            io_action  = lo_job_action
-*          IMPORTING
-*            es_job_key = DATA(ls_job_key) ).
+        " lo_job_scheduler->start_job(
+        "   EXPORTING
+        "     io_action  = lo_job_action
+        "   IMPORTING
+        "     es_job_key = DATA(ls_job_key) ).
 *
 **        "persist jobname/jobcount in application log table -> DONE inside
 **        lo_log->set_batch_job( jobname = ls_job_key-job_name jobcount = ls_job_key-job_count ).
@@ -135,7 +144,9 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
         ENDIF.
 
 *------ Set the default transport request
-        zcl_abapgit_default_transport=>get_instance( )->set( CONV #( ls_request_data-transportrequest ) ).
+        IF ls_request_data-transportrequest <> ''.
+          zcl_abapgit_default_transport=>get_instance( )->set( CONV #( ls_request_data-transportrequest ) ).
+        ENDIF.
 
 *------ Create online repo
         DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
@@ -154,7 +165,6 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 
         ls_checks-transport-transport = ls_request_data-transportrequest.
 
-        DATA lo_log TYPE REF TO zcl_abapgit_log.
         lo_log = NEW #( ).
 
 *------ Import Objects
@@ -167,17 +177,6 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
           content_type = co_content_type_object_v1 ).
 
 *------ prepare response information
-        TYPES:
-          BEGIN OF t_obj_result,
-            obj_type   TYPE trobjtype,
-            obj_name   TYPE sobj_name,
-            obj_status TYPE symsgty,
-            package    TYPE devclass,
-            msg_type   TYPE symsgty,
-            msg_text   TYPE string,
-          END OF t_obj_result.
-        DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
-
         response->set_body_data(
           content_handler = lo_resp_content_handler
           data            = lt_result_table ).
@@ -199,38 +198,34 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 
 
   METHOD validate_request_data.
+    DATA: lv_msg TYPE string.
 
-*    "check whether git url is well formed
-*    zcl_abapgit_url=>validate( |{ is_request_data-url }| ).
-*
-*    "check whether package is already used
-*    zcl_abapgit_repo_srv=>get_instance( )->validate_package( CONV #( is_request_data-package ) ).
-*
-*    "check whether git url is already used
-*    DATA(lt_repo_list) = zcl_abapgit_repo_srv=>get_instance( )->list( ).
-*    LOOP AT lt_repo_list ASSIGNING FIELD-SYMBOL(<ls_repo_list>).
-*      IF cl_http_utility=>if_http_utility~unescape_url(
-*          zcl_abapgit_url=>name( is_request_data-url ) ) EQ <ls_repo_list>->get_name( ).
-*        MESSAGE e002(A4C_AGIT_ADT) WITH is_request_data-url <ls_repo_list>->get_package( ) INTO DATA(lv_msg).
-*        zcx_abapgit_exception=>raise_t100( ).
-*      ENDIF.
-*    ENDLOOP.
-*
-*    "transport request exists
-*    SELECT SINGLE * FROM e070 INTO @DATA(ls_e070)
-*      WHERE
-*      trkorr = @is_request_data-transportrequest.
-*
-*    IF sy-subrc NE 0.
-*      MESSAGE e003(A4C_AGIT_ADT) WITH is_request_data-transportrequest INTO lv_msg.
-*      zcx_abapgit_exception=>raise_t100( ).
-*    ELSEIF ls_e070-trstatus NE 'D'.
-*      MESSAGE e004(A4C_AGIT_ADT) WITH is_request_data-transportrequest INTO lv_msg.
-*      zcx_abapgit_exception=>raise_t100( ).
-*    ELSEIF ls_e070-as4user NE sy-uname.
-*      MESSAGE e005(A4C_AGIT_ADT) WITH is_request_data-transportrequest sy-uname INTO lv_msg.
-*      zcx_abapgit_exception=>raise_t100( ).
-*    ENDIF.
+    " only check transport if package requires a transport
+    DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get(  iv_repo_key ).
+
+    DATA(lv_package_key) = lo_repo->get_package(  ).
+
+    DATA(lo_package) = zcl_abapgit_factory=>get_sap_package( lv_package_key ).
+
+    IF lo_package->are_changes_recorded_in_tr_req( ) = abap_true.
+
+      "transport request exists
+      SELECT SINGLE * FROM e070 INTO @DATA(ls_e070)
+        WHERE
+        trkorr = @is_request_data-transportrequest.
+
+      IF sy-subrc NE 0.
+        MESSAGE e003(a4c_agit_adt) WITH is_request_data-transportrequest INTO lv_msg.
+        zcx_abapgit_exception=>raise_t100( ).
+      ELSEIF ls_e070-trstatus NE 'D'.
+        MESSAGE e004(a4c_agit_adt) WITH is_request_data-transportrequest INTO lv_msg.
+        zcx_abapgit_exception=>raise_t100( ).
+      ELSEIF ls_e070-as4user NE sy-uname.
+        MESSAGE e005(a4c_agit_adt) WITH is_request_data-transportrequest sy-uname INTO lv_msg.
+        zcx_abapgit_exception=>raise_t100( ).
+      ENDIF.
+
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.
