@@ -208,9 +208,7 @@
     },
     "parser_error": {
       "enabled": true,
-      "exclude": [
-        "src/zcl_abapgit_res_repo_info_ext.clas.testclasses.abap"
-      ]
+      "exclude": []
     },
     "sequential_blank": {
       "enabled": true,

@@ -1,4 +1,7 @@
 *"* use this source file for your ABAP unit test classes
+DEFINE add_xml.
+  CONCATENATE lv_xml &1 INTO lv_xml.
+END-OF-DEFINITION. "#EC NEEDED
 
 CLASS ltcl_simple_transformation DEFINITION FINAL FOR TESTING
   DURATION SHORT
@@ -232,12 +235,12 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
 
 ENDCLASS.
 
-CLASS ltd_abapgit_provider_default DEFINITION.
+CLASS lcl_abapgit_provider_default DEFINITION.
   PUBLIC SECTION.
     INTERFACES: lif_abapgit_provider.
 ENDCLASS.
 
-CLASS ltd_abapgit_provider_default IMPLEMENTATION.
+CLASS lcl_abapgit_provider_default IMPLEMENTATION.
 
   METHOD lif_abapgit_provider~list_repositories.
 
@@ -301,7 +304,7 @@ CLASS ltcl_abapgit_repos_resource IMPLEMENTATION.
     CREATE OBJECT me->request_stub.
     CREATE OBJECT me->response_spy.
     CREATE OBJECT me->abapgit_repos_resource.
-    me->abapgit_repos_resource->set_abapgit_provider( io_abapgit_provider = NEW ltd_abapgit_provider_default( ) ).
+    me->abapgit_repos_resource->set_abapgit_provider( io_abapgit_provider = NEW lcl_abapgit_provider_default( ) ).
   ENDMETHOD.
 
   METHOD no_content_type_header.
