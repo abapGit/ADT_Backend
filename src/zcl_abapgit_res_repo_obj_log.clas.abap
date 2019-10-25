@@ -56,7 +56,17 @@ CLASS zcl_abapgit_res_repo_obj_log IMPLEMENTATION.
 
 
   METHOD get.
+    TYPES:
+          BEGIN OF t_obj_result,
+            obj_type   TYPE trobjtype,
+            obj_name   TYPE sobj_name,
+            obj_status TYPE symsgty,
+            package    TYPE devclass,
+            msg_type   TYPE symsgty,
+            msg_text   TYPE string,
+          END OF t_obj_result.
 
+    DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
     DATA(lo_resp_content_handler) = cl_adt_rest_cnt_hdl_factory=>get_instance( )->get_handler_for_xml_using_st(
          st_name      = co_st_name_post_res
          root_name    = co_root_name_post_res
@@ -69,18 +79,6 @@ CLASS zcl_abapgit_res_repo_obj_log IMPLEMENTATION.
     TRY.
 
 *------ prepare response information
-        TYPES:
-          BEGIN OF t_obj_result,
-            obj_type   TYPE trobjtype,
-            obj_name   TYPE sobj_name,
-            obj_status TYPE symsgty,
-            package    TYPE devclass,
-            msg_type   TYPE symsgty,
-            msg_text   TYPE string,
-          END OF t_obj_result.
-        DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
-
-
         response->set_body_data(
           content_handler = lo_resp_content_handler
           data            = lt_result_table ).

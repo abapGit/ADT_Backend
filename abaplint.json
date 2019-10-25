@@ -11,7 +11,7 @@
       "folder": "/deps",
       "files": "/src/**/*.*"
     }
-  ],  
+  ],
   "syntax": {
     "version": "v740sp08",
     "errorNamespace": "^(Z|Y)",
@@ -208,7 +208,9 @@
     },
     "parser_error": {
       "enabled": true,
-      "exclude": []
+      "exclude": [
+        "src/zcl_abapgit_res_repo_info_ext.clas.testclasses.abap"
+      ]
     },
     "sequential_blank": {
       "enabled": true,
