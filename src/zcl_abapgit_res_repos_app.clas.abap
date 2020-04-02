@@ -63,5 +63,30 @@ CLASS zcl_abapgit_res_repos_app IMPLEMENTATION.
         template        = '/repos/{key}/pull'
         handler_class   = 'ZCL_ABAPGIT_RES_REPO_PULL' ).
 
+    " "New resource for status checks
+    " registry->register_resource(
+    "   template        = '/repos/{key}/status'
+    "   handler_class   = 'ZCL_ABAPGIT_RES_REPO_PULL' ).
+
+    "New resource for object log
+    " registry->register_resource(
+    "     template        = '/repos/{key}/log/{app_log_key}'
+    "     handler_class   = 'ZCL_ABAPGIT_RES_REPO_OBJ_LOG' ).
+
+    "stage
+    registry->register_resource(
+        template        = '/repos/{key}/stage'
+        handler_class   = 'ZCL_ABAPGIT_RES_REPO_STAGE' ).
+
+    "push
+    registry->register_resource(
+        template        = '/repos/{key}/push'
+        handler_class   = 'ZCL_ABAPGIT_RES_REPO_PUSH' ).
+
+    "files
+    registry->register_resource(
+        template        = '/repos/{key}/files'
+        handler_class   = 'ZCL_ABAPGIT_RES_REPO_FILES' ).
+
   ENDMETHOD.
 ENDCLASS.
