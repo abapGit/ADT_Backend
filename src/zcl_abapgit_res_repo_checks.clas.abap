@@ -9,14 +9,15 @@ CREATE PUBLIC .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA: lo_repo_service       TYPE REF TO zif_abapgit_repo_srv.
+    DATA: mv_repo_service       TYPE REF TO zif_abapgit_repo_srv.
     " DATA: lo_repo_check_service TYPE REF TO zif_abapgit_repository_checks.
 
-    "! <p>Checks whether the abapgit exception which is raised is because of any authentication related issues on the git server</p>
+    "! <p>Checks whether the abapgit exception which is raised is
+    "! because of any authentication related issues on the git server</p>
     METHODS is_authorization_issue
-      IMPORTING iv_exc_text             TYPE string
-      EXPORTING ev_http_status          TYPE i
-      RETURNING VALUE(rv_is_auth_issue) TYPE abap_bool.
+      IMPORTING iv_exc_text      TYPE string
+      EXPORTING ev_http_status   TYPE i
+                ev_is_auth_issue TYPE abap_bool.
 
     METHODS check_connection IMPORTING
                                io_repository TYPE REF TO zcl_abapgit_repo_online
@@ -34,10 +35,8 @@ CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
 
   METHOD check_connection.
     zcl_abapgit_http=>create_by_url(
-      EXPORTING
         iv_url     = io_repository->get_url( )
-        iv_service = iv_service
-    ).
+        iv_service = iv_service ).
   ENDMETHOD.
 
   METHOD is_authorization_issue.
@@ -50,9 +49,9 @@ CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
     ENDIF.
 
     IF ev_http_status IS NOT INITIAL.
-      rv_is_auth_issue = abap_true.
+      ev_is_auth_issue = abap_true.
     ELSE.
-      rv_is_auth_issue = abap_false.
+      ev_is_auth_issue = abap_false.
     ENDIF.
   ENDMETHOD.
 
@@ -62,12 +61,14 @@ CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
 
   METHOD post.
     DATA:
-      lv_repo_key     TYPE zif_abapgit_persistence=>ty_value,
-      lv_username     TYPE string,
-      lv_password     TYPE string,
-      lv_service      TYPE string,
-      lo_repo_online  TYPE REF TO zcl_abapgit_repo_online,
-      lo_http_utility TYPE REF TO cl_http_utility.
+      lv_repo_key      TYPE zif_abapgit_persistence=>ty_value,
+      lv_username      TYPE string,
+      lv_password      TYPE string,
+      lv_service       TYPE string,
+      lo_repo_online   TYPE REF TO zcl_abapgit_repo_online,
+      lo_http_utility  TYPE REF TO cl_http_utility,
+      lv_http_status   TYPE i,
+      lv_is_auth_issue TYPE abap_bool.
 
 *-- Get repository key
     request->get_uri_attribute( EXPORTING name = 'key' mandatory = abap_true
@@ -86,12 +87,12 @@ CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
 
     TRY.
 
-        IF lo_repo_service IS INITIAL.
-          lo_repo_service = get_repository_service( ).
+        IF mv_repo_service IS INITIAL.
+          mv_repo_service = get_repository_service( ).
         ENDIF.
 
 * ----- Determine repository from repository key
-        DATA(lo_repo) = lo_repo_service->get( lv_repo_key ).
+        DATA(lo_repo) = mv_repo_service->get( lv_repo_key ).
         lo_repo_online ?= lo_repo.
 
         lv_service = 'upload'.
@@ -107,10 +108,11 @@ CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
         check_connection( io_repository = lo_repo_online iv_service = lv_service ).
 
       CATCH zcx_abapgit_exception INTO DATA(lx_abapgit_exception).
-        DATA lv_http_status TYPE i.
 
 *------ Check whether the exception occurred because of any authentication issues
-        IF is_authorization_issue( EXPORTING iv_exc_text = lx_abapgit_exception->get_text( ) IMPORTING ev_http_status = lv_http_status ).
+        is_authorization_issue( EXPORTING iv_exc_text = lx_abapgit_exception->get_text( )
+                                IMPORTING ev_http_status = lv_http_status ev_is_auth_issue = lv_is_auth_issue ).
+        IF lv_is_auth_issue = abap_true.
 
 *---------- Convert lv_http_status to a string and then remove the trailing whitespaces
 *---------- This step is added as directly sending the integer http status as part of exception properties will
@@ -120,12 +122,14 @@ CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
 
 *---------- Raise internal server error, as the connection to github failed from abap server
 *---------- Return the error code from the abapgit exception as part of additional adt exception properties.
-          DATA(iv_properties) = zcx_adt_rest_abapgit=>create_properties( )->add_property( key = 'http_status' value  = lv_http_status_string ).
+          DATA(iv_properties) = zcx_adt_rest_abapgit=>create_properties( )->add_property(
+            key = 'http_status' value  = lv_http_status_string ).
           zcx_adt_rest_abapgit=>raise_with_error( ix_error = lx_abapgit_exception
                                                  iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
           "  iv_properties = iv_properties ).
         ELSE.
-          zcx_adt_rest_abapgit=>raise_with_error( ix_error = lx_abapgit_exception iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
+          zcx_adt_rest_abapgit=>raise_with_error( ix_error = lx_abapgit_exception
+            iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
         ENDIF.
 
         response->set_status( cl_rest_status_code=>gc_success_ok ).

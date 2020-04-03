@@ -231,15 +231,15 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
     lo_atom_util->append_link(
       EXPORTING
         rel  = lc_file_rel_fetch_local
-        href = |{ co_root_path }/repos/{ iv_repo_key }/files?filename={ iv_filename }&version=local|
+        href = |{ lc_root_path }/repos/{ iv_repo_key }/files?filename={ iv_filename }&version=local|
         type = |fetch_link|
       CHANGING
         links = rt_links ).
 
     lo_atom_util->append_link(
       EXPORTING
-        rel  = co_file_rel_fetch_remote
-        href = |{ co_root_path }/repos/{ iv_repo_key }/files?filename={ iv_filename }&version=remote|
+        rel  = lc_file_rel_fetch_remote
+        href = |{ lc_root_path }/repos/{ iv_repo_key }/files?filename={ iv_filename }&version=remote|
         type = |fetch_link|
       CHANGING
         links = rt_links ).
