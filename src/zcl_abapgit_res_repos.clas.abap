@@ -24,7 +24,7 @@ CLASS zcl_abapgit_res_repos DEFINITION
 
     TYPES: BEGIN OF ty_repo_w_links.
              INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
-             TYPES: links TYPE if_atom_types=>link_t.
+    TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
 
     TYPES: tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY.

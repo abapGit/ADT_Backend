@@ -147,11 +147,13 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
 
               IF <ls_repo_items>-obj_type IS NOT INITIAL.
 *------------ GET object workbench key
-                ls_obj_wbtype   = get_object_wb_type( iv_obj_name = <ls_repo_items>-obj_name  iv_obj_type = <ls_repo_items>-obj_type ).
+                ls_obj_wbtype   = get_object_wb_type(
+                  iv_obj_name = <ls_repo_items>-obj_name  iv_obj_type = <ls_repo_items>-obj_type ).
                 ls_object-wbkey = cl_wb_object_type=>get_global_id_from_global_type( p_global_type = ls_obj_wbtype ).
 
 *------------ GET adt uri
-                ls_object_ref-uri = get_object_adt_uri( iv_obj_name = <ls_repo_items>-obj_name  is_wbtype = ls_obj_wbtype ).
+                ls_object_ref-uri = get_object_adt_uri(
+                  iv_obj_name = <ls_repo_items>-obj_name  is_wbtype = ls_obj_wbtype ).
               ENDIF.
             ENDIF.
             ls_object-object_ref = ls_object_ref.
@@ -163,7 +165,8 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
               ls_file-filename = <ls_repo_file>-filename.
               ls_file-remotestate = <ls_repo_file>-rstate.
               ls_file-localstate = <ls_repo_file>-lstate.
-              ls_file-atom_links = get_file_links( iv_repo_key = lo_repo_online->get_key( ) iv_filename = ls_file-filename ).
+              ls_file-atom_links = get_file_links( iv_repo_key = lo_repo_online->get_key( )
+                iv_filename = ls_file-filename ).
               INSERT ls_file INTO TABLE lt_file.
             ENDLOOP.
             ls_object-files = lt_file.
@@ -219,15 +222,15 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
   METHOD get_file_links.
 
     CONSTANTS:
-      co_file_rel_fetch_local  TYPE string VALUE 'http://www.sap.com/adt/abapgit/file/relations/fetch/localversion',
-      co_file_rel_fetch_remote TYPE string VALUE 'http://www.sap.com/adt/abapgit/file/relations/fetch/remoteversion',
-      co_root_path             TYPE string VALUE '/sap/bc/adt/abapgit'.
+      lc_file_rel_fetch_local  TYPE string VALUE 'http://www.sap.com/adt/abapgit/file/relations/fetch/localversion',
+      lc_file_rel_fetch_remote TYPE string VALUE 'http://www.sap.com/adt/abapgit/file/relations/fetch/remoteversion',
+      lc_root_path             TYPE string VALUE '/sap/bc/adt/abapgit'.
 
     DATA(lo_atom_util) = cl_adt_atom_utility=>create_instance( ).
 
     lo_atom_util->append_link(
       EXPORTING
-        rel  = co_file_rel_fetch_local
+        rel  = lc_file_rel_fetch_local
         href = |{ co_root_path }/repos/{ iv_repo_key }/files?filename={ iv_filename }&version=local|
         type = |fetch_link|
       CHANGING

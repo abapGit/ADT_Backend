@@ -18,7 +18,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_HTTP_ADT IMPLEMENTATION.
+CLASS zcl_abapgit_http_adt IMPLEMENTATION.
 
 
   METHOD determine_access_level.

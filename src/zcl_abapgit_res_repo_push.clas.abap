@@ -16,7 +16,7 @@ CLASS zcl_abapgit_res_repo_push DEFINITION PUBLIC INHERITING FROM cl_adt_rest_re
     TYPES:
       BEGIN OF ty_repo_w_links.
         INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
-        TYPES:   links TYPE if_atom_types=>link_t.
+    TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links .
     TYPES:
       tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY .
@@ -33,11 +33,11 @@ CLASS zcl_abapgit_res_repo_push DEFINITION PUBLIC INHERITING FROM cl_adt_rest_re
              user     TYPE string,
              password TYPE string,
            END OF ty_credentials.
-    TYPES:BEGIN OF ty_push_request,
+    TYPES: BEGIN OF ty_push_request,
             staged_objects  TYPE zcl_abapgit_res_repo_stage=>tt_abapgit_object, "tta4c_abapgit_object,
-            abapgit_comment TYPE zif_abapgit_definitions=>ty_comment, "tsa4c_abapgit_comment,
-            credentials     TYPE ty_credentials, "tsa4c_abapgit_credentials,
-          END OF ty_push_request.
+             abapgit_comment TYPE zif_abapgit_definitions=>ty_comment, "tsa4c_abapgit_comment,
+             credentials     TYPE ty_credentials, "tsa4c_abapgit_credentials,
+           END OF ty_push_request.
 
     METHODS transform_request_data
       IMPORTING
@@ -140,14 +140,17 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
 **------ Retrieve repository content
         LOOP AT ls_request_data-staged_objects ASSIGNING FIELD-SYMBOL(<ls_staged_objects>).
           LOOP AT <ls_staged_objects>-files ASSIGNING FIELD-SYMBOL(<ls_staged_objects_files>).
-            IF <ls_staged_objects_files>-localstate = co_file_state_added OR <ls_staged_objects_files>-localstate = co_file_state_modified.
+            IF <ls_staged_objects_files>-localstate = co_file_state_added
+            OR <ls_staged_objects_files>-localstate = co_file_state_modified.
 *-------------- New file or changed file
               LOOP AT ls_files-local ASSIGNING FIELD-SYMBOL(<ls_files_local>).
                 IF <ls_files_local>-file-filename EQ <ls_staged_objects_files>-filename.
                   lo_stage->add( iv_path     = <ls_files_local>-file-path
                                  iv_filename = <ls_files_local>-file-filename
                                  iv_data     = <ls_files_local>-file-data ).
-                  " lo_log->add_text( iv_text = |File { <ls_files_local>-file-filename } of object { <ls_staged_objects>-object_ref-type } { <ls_staged_objects>-object_ref-name } is selected to be exported |
+                  " lo_log->add_text( iv_text = |File { <ls_files_local>-file-filename } of object {
+                  " <ls_staged_objects>-object_ref-type } { <ls_staged_objects>-object_ref-name
+                  "} is selected to be exported |
                   "                   iv_type = 'I' ).
                   CONTINUE.
                 ENDIF.
@@ -156,8 +159,9 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
 *-------------- Deletion case: file need to be deleted on repository
               lo_stage->rm( iv_path     = <ls_staged_objects_files>-path
                             iv_filename = <ls_staged_objects_files>-filename ).
-              " lo_log->add_text( iv_text = |File { <ls_staged_objects_files>-filename } of object { <ls_staged_objects>-object_ref-type } { <ls_staged_objects>-object_ref-name } is selected to be removed remotely |
-              "                   iv_type = 'I' ).
+              " lo_log->add_text( iv_text = |File { <ls_staged_objects_files>-filename } of object {
+              " <ls_staged_objects>-object_ref-type } { <ls_staged_objects>-object_ref-name
+              "} is selected to be removed remotely |  iv_type = 'I' ).
             ENDIF.
           ENDLOOP.
         ENDLOOP.
@@ -183,7 +187,8 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
         response->set_status( cl_rest_status_code=>gc_success_ok ).
 
 *------ Handle issues
-      CATCH zcx_abapgit_cancel zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error  zcx_abapgit_not_found INTO DATA(lx_exception).
+      CATCH zcx_abapgit_cancel zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error
+            zcx_abapgit_not_found INTO DATA(lx_exception).
         " IF lo_log IS BOUND.
         "   lo_log->add_exception( lx_exception ).
         "   lo_log->add_text( iv_text = 'Repository Push aborted' iv_type = 'A' ).
