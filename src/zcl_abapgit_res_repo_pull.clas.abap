@@ -27,7 +27,7 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
       tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY.
 
     CONSTANTS co_class_name             TYPE seoclsname VALUE 'ZCL_ABAPGIT_RES_REPOS' ##NO_TEXT.
-    CONSTANTS co_resource_type          TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
+    CONSTANTS co_resource_type TYPE string     VALUE 'REPOS' ##NO_TEXT.             "EC NOTEXT
     CONSTANTS co_st_name_pull           TYPE string     VALUE 'ZABAPGIT_ST_REPO_PULL' ##NO_TEXT.
     CONSTANTS co_st_name_post_res       TYPE string     VALUE 'ZABAPGIT_ST_REPO_POST_RES'.
     CONSTANTS co_root_name_pull         TYPE string     VALUE 'REPOSITORY' ##NO_TEXT.
@@ -54,19 +54,19 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
+CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 
 
   METHOD post.
     TYPES:
-          BEGIN OF t_obj_result,
-            obj_type   TYPE trobjtype,
-            obj_name   TYPE sobj_name,
-            obj_status TYPE symsgty,
-            package    TYPE devclass,
-            msg_type   TYPE symsgty,
-            msg_text   TYPE string,
-          END OF t_obj_result.
+      BEGIN OF t_obj_result,
+        obj_type   TYPE trobjtype,
+        obj_name   TYPE sobj_name,
+        obj_status TYPE symsgty,
+        package    TYPE devclass,
+        msg_type   TYPE symsgty,
+        msg_text   TYPE string,
+      END OF t_obj_result.
     DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
     DATA:
       ls_request_data  TYPE ty_request_pull_data,
@@ -215,14 +215,14 @@ CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
         trkorr = @is_request_data-transportrequest.
 
       IF sy-subrc NE 0.
-        MESSAGE e003(a4c_agit_adt) WITH is_request_data-transportrequest INTO lv_msg.
-        zcx_abapgit_exception=>raise_t100( ).
+        lv_msg = |Transport { is_request_data-transportrequest } not found|.
+        zcx_abapgit_exception=>raise( lv_msg  ).
       ELSEIF ls_e070-trstatus NE 'D'.
-        MESSAGE e004(a4c_agit_adt) WITH is_request_data-transportrequest INTO lv_msg.
-        zcx_abapgit_exception=>raise_t100( ).
+        lv_msg = |Transport { is_request_data-transportrequest } is released or protected|.
+        zcx_abapgit_exception=>raise( lv_msg  ).
       ELSEIF ls_e070-as4user NE sy-uname.
-        MESSAGE e005(a4c_agit_adt) WITH is_request_data-transportrequest sy-uname INTO lv_msg.
-        zcx_abapgit_exception=>raise_t100( ).
+        lv_msg = |Transport { is_request_data-transportrequest } is not owned by { sy-uname }|.
+        zcx_abapgit_exception=>raise( lv_msg  ).
       ENDIF.
 
     ENDIF.

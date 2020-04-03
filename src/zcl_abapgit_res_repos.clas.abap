@@ -24,7 +24,7 @@ CLASS zcl_abapgit_res_repos DEFINITION
 
     TYPES: BEGIN OF ty_repo_w_links.
              INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
-    TYPES: links TYPE if_atom_types=>link_t.
+    TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
 
     TYPES: tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY.
@@ -130,8 +130,13 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
   METHOD get_links.
 
     CONSTANTS:
-      lc_rel_pull  TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/pull',
-      lc_root_path TYPE string VALUE '/sap/bc/adt/abapgit'. "todo: extract
+      lc_rel_pull   TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/pull',
+      " lc_rel_status TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/status',
+      " lc_rel_log    TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/log',
+      lc_rel_stage  TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/stage',
+      lc_rel_commit TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/push',
+      lc_rel_check  TYPE string VALUE 'http://www.sap.com/adt/abapgit/relations/check',
+      lc_root_path  TYPE string VALUE '/sap/bc/adt/abapgit'. "todo: extract
 
     DATA(lo_atom_util) = cl_adt_atom_utility=>create_instance( ).
 
@@ -142,6 +147,46 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
       CHANGING
         links = rt_links ).
 
+    lo_atom_util->append_link(
+      EXPORTING
+        rel  = lc_rel_stage
+        href = |{ lc_root_path }/repos/{ iv_repo_key }/stage|
+        type = |stage_link|
+      CHANGING
+        links = rt_links ).
+
+    lo_atom_util->append_link(
+      EXPORTING
+        rel  = lc_rel_commit
+        href = |{ lc_root_path }/repos/{ iv_repo_key }/push|
+        type = |push_link|
+      CHANGING
+        links = rt_links ).
+
+    lo_atom_util->append_link(
+      EXPORTING
+        rel  = lc_rel_check
+        href = |{ lc_root_path }/repos/{ iv_repo_key }/checks|
+        type = |check_link|
+      CHANGING
+        links = rt_links ).
+    " IF is_app_log_key-app_log IS NOT INITIAL.
+    "   lo_atom_util->append_link(
+    "     EXPORTING
+    "       rel  = lc_rel_status
+    "       href = |{ lc_root_path }/repos/{ iv_repo_key }/status/{ is_app_log_key-app_log }|
+    "       type = |status_link|
+    "     CHANGING
+    "       links = rt_links ).
+
+    "   lo_atom_util->append_link(
+    "     EXPORTING
+    "       rel  = lc_rel_log
+    "       href = |{ lc_root_path }/repos/{ iv_repo_key }/log/{ is_app_log_key-app_log }|
+    "       type = |log_link|
+    "     CHANGING
+    "       links = rt_links ).
+    " ENDIF.
   ENDMETHOD.
 
 
