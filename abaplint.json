@@ -74,7 +74,7 @@
     "keyword_case": {
       "style": "upper",
       "ignoreFunctionModuleName": true,
-      "exclude": [],
+      "exclude": ["src/zcl_abapgit_res_repo_files.clas.abap"],
       "ignoreExceptions": true,
       "ignoreLowerClassImplmentationStatement": true,
       "ignoreGlobalClassDefinition": false,
