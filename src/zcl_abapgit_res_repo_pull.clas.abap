@@ -54,7 +54,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
 
 
   METHOD post.
@@ -70,10 +70,8 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
     DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
     DATA:
       ls_request_data  TYPE ty_request_pull_data,
-      lv_repo_key      TYPE zif_abapgit_persistence=>ty_value,
-      lo_job_scheduler TYPE REF TO if_cbo_job_scheduler,
-      lo_job_action    TYPE REF TO if_cbo_job_action.
-    DATA lo_log TYPE REF TO zcl_abapgit_log.
+      lv_repo_key      TYPE zif_abapgit_persistence=>ty_value.
+      DATA lo_log TYPE REF TO zcl_abapgit_log.
 
     TRY.
 
@@ -187,7 +185,7 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 *NEW end
 
 *---- Handle issues
-      CATCH zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
+      CATCH zcx_abapgit_exception cx_uuid_error INTO DATA(lx_exception).
         ROLLBACK WORK.
         zcx_adt_rest_abapgit=>raise_with_error(
             ix_error       = lx_exception
