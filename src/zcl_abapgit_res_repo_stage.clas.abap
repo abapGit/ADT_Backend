@@ -72,8 +72,6 @@ CLASS zcl_abapgit_res_repo_stage DEFINITION PUBLIC INHERITING FROM cl_adt_rest_r
       RETURNING
         VALUE(rt_links) TYPE if_atom_types=>link_t.
 
-protected section.
-private section.
 ENDCLASS.
 
 
@@ -253,9 +251,9 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
 
   METHOD get_object_adt_uri.
 
-    DATA:lv_name TYPE seu_objkey,
-         lv_type TYPE wbobjtype,
-         request TYPE REF TO cl_wb_request.
+    DATA: lv_name TYPE seu_objkey,
+          lv_type TYPE wbobjtype,
+          lv_request TYPE REF TO cl_wb_request.
     TRY.
         DATA(lv_mapper) = cl_adt_uri_mapper=>get_instance( ).
 
@@ -271,14 +269,14 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
               RECEIVING
                 uri  = rv_adt_uri.
           CATCH cx_sy_dyn_call_error.
-            CREATE OBJECT request
+            CREATE OBJECT lv_request
               EXPORTING
                 p_global_type = lv_type
                 p_object_name = lv_name
                 p_operation   = swbm_c_op_display
               EXCEPTIONS
                 OTHERS        = 0.
-            rv_adt_uri = lv_mapper->if_adt_uri_mapper~map_wb_request_to_objref( request )->ref_data-uri.
+            rv_adt_uri = lv_mapper->if_adt_uri_mapper~map_wb_request_to_objref( lv_request )->ref_data-uri.
         ENDTRY.
       CATCH cx_adt_uri_mapping.
     ENDTRY.

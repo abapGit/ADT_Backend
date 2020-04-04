@@ -28,7 +28,6 @@ CLASS zcl_abapgit_res_repo_push DEFINITION PUBLIC INHERITING FROM cl_adt_rest_re
 
     METHODS post
         REDEFINITION .
-protected section.
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_credentials,
              user     TYPE string,

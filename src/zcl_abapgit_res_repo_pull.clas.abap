@@ -71,7 +71,7 @@ CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
     DATA:
       ls_request_data  TYPE ty_request_pull_data,
       lv_repo_key      TYPE zif_abapgit_persistence=>ty_value.
-      DATA lo_log TYPE REF TO zcl_abapgit_log.
+    DATA lo_log TYPE REF TO zcl_abapgit_log.
 
     TRY.
 
