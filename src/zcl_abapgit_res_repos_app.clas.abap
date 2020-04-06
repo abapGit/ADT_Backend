@@ -60,6 +60,10 @@ CLASS zcl_abapgit_res_repos_app IMPLEMENTATION.
         handler_class   = 'ZCL_ABAPGIT_RES_REPO' ).
 
     registry->register_resource(
+      template        = '/repos/{key}/branches/{branch}'
+      handler_class   = 'ZCL_ABAPGIT_RES_REPO_SWITCH' ).
+
+    registry->register_resource(
         template        = '/repos/{key}/pull'
         handler_class   = 'ZCL_ABAPGIT_RES_REPO_PULL' ).
 
