@@ -53,7 +53,8 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_PUSH IMPLEMENTATION.
+
 
   METHOD post.
     DATA:
@@ -66,9 +67,6 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
       lo_stage                    TYPE REF TO zcl_abapgit_stage,
       ls_files                    TYPE zif_abapgit_definitions=>ty_stage_files,
       lo_http_utility             TYPE REF TO cl_http_utility,
-      " ls_alog_key                 TYPE tsa4c_agit_applog_key,
-      lo_job_scheduler            TYPE REF TO if_cbo_job_scheduler,
-      lo_job_action               TYPE REF TO if_cbo_job_action,
       ls_request_data_transformed TYPE ty_push_request.
 
     TRY.
@@ -187,7 +185,7 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
         response->set_status( cl_rest_status_code=>gc_success_ok ).
 
 *------ Handle issues
-      CATCH zcx_abapgit_cancel zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error
+      CATCH zcx_abapgit_cancel zcx_abapgit_exception cx_uuid_error
             zcx_abapgit_not_found INTO DATA(lx_exception).
         " IF lo_log IS BOUND.
         "   lo_log->add_exception( lx_exception ).
@@ -201,6 +199,7 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
     ENDTRY.
 
   ENDMETHOD.
+
 
   METHOD transform_request_data.
     DATA:

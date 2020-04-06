@@ -62,7 +62,8 @@ CLASS zcl_abapgit_res_repo_stage DEFINITION PUBLIC INHERITING FROM cl_adt_rest_r
       IMPORTING
                 iv_obj_name       TYPE sobj_name
                 is_wbtype         TYPE wbobjtype
-      RETURNING VALUE(rv_adt_uri) TYPE string.
+      RETURNING VALUE(rv_adt_uri) TYPE string
+      RAISING cx_adt_uri_mapping .
 
     METHODS get_file_links
       IMPORTING
@@ -75,7 +76,8 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
+
 
   METHOD get.
     DATA:
@@ -209,7 +211,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
         response->set_body_data( content_handler = lo_response_content_handler data = ls_response_data ).
         response->set_status( cl_rest_status_code=>gc_success_ok ).
 
-      CATCH zcx_abapgit_exception  cx_cbo_job_scheduler cx_uuid_error zcx_abapgit_not_found INTO DATA(lx_exception).
+      CATCH zcx_abapgit_exception cx_uuid_error zcx_abapgit_not_found INTO DATA(lx_exception).
         ROLLBACK WORK.
         zcx_adt_rest_abapgit=>raise_with_error(
             ix_error       = lx_exception
@@ -246,14 +248,41 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD get_object_adt_uri.
+
+    DATA: lv_name TYPE seu_objkey,
+          lv_type TYPE wbobjtype,
+          lv_request TYPE REF TO cl_wb_request.
     TRY.
-        rv_adt_uri = cl_adt_uri_mapper=>get_instance( )->if_adt_uri_mapper~get_adt_object_ref_uri(
-           name = CONV #( iv_obj_name )
-           type = VALUE #( objtype_tr = is_wbtype-objtype_tr subtype_wb = is_wbtype-subtype_wb ) ).
+        DATA(lv_mapper) = cl_adt_uri_mapper=>get_instance( ).
+
+        lv_name  = CONV #( iv_obj_name ).
+        lv_type-objtype_tr = is_wbtype-objtype_tr .
+        lv_type-subtype_wb = is_wbtype-subtype_wb.
+
+        TRY.
+            CALL METHOD lv_mapper->('IF_ADT_URI_MAPPER~GET_ADT_OBJECT_REF_URI')
+              EXPORTING
+                name = lv_name
+                type = lv_type
+              RECEIVING
+                uri  = rv_adt_uri.
+          CATCH cx_sy_dyn_call_error.
+            CREATE OBJECT lv_request
+              EXPORTING
+                p_global_type = lv_type
+                p_object_name = lv_name
+                p_operation   = swbm_c_op_display
+              EXCEPTIONS
+                OTHERS        = 0.
+            rv_adt_uri = lv_mapper->if_adt_uri_mapper~map_wb_request_to_objref( lv_request )->ref_data-uri.
+        ENDTRY.
       CATCH cx_adt_uri_mapping.
     ENDTRY.
+
   ENDMETHOD.
+
 
   METHOD get_object_wb_type.
     cl_wb_object=>create_from_transport_key(

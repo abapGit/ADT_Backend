@@ -52,7 +52,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_obj_log IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_OBJ_LOG IMPLEMENTATION.
 
 
   METHOD get.
@@ -86,7 +86,7 @@ CLASS zcl_abapgit_res_repo_obj_log IMPLEMENTATION.
         response->set_status( cl_rest_status_code=>gc_success_ok ).
 
 *---- Handle issues
-      CATCH zcx_abapgit_exception cx_cbo_job_scheduler cx_uuid_error INTO DATA(lx_exception).
+      CATCH zcx_abapgit_exception cx_uuid_error INTO DATA(lx_exception).
         ROLLBACK WORK.
         zcx_adt_rest_abapgit=>raise_with_error(
             ix_error       = lx_exception
