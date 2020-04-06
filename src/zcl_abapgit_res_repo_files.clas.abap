@@ -62,10 +62,10 @@ CLASS zcl_abapgit_res_repo_files IMPLEMENTATION.
         "SET credentials in case they are supplied
         IF lv_username IS NOT INITIAL AND lv_password IS NOT INITIAL.
           zcl_abapgit_default_auth_info=>set_auth_info( iv_user     = lv_username
-                                                       iv_password = lv_password ).
+                                                        iv_password = lv_password ).
         ENDIF.
 
-        IF lv_version = co_file_remote . "if requested is remote version
+        IF lv_version = co_file_remote. "if requested is remote version
 
           "read the contents of the requested remote file
           DATA(rfiles) = lo_repo->get_files_remote( ).
