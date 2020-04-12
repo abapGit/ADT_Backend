@@ -244,7 +244,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
         DATA(lv_mapper) = cl_adt_uri_mapper=>get_instance( ).
 
         lv_name  = CONV #( iv_obj_name ).
-        lv_type-objtype_tr = is_wbtype-objtype_tr .
+        lv_type-objtype_tr = is_wbtype-objtype_tr.
         lv_type-subtype_wb = is_wbtype-subtype_wb.
 
         TRY.
