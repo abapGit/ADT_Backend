@@ -1,22 +1,6 @@
 CLASS zcl_abapgit_res_repo_stage DEFINITION PUBLIC INHERITING FROM cl_adt_rest_resource FINAL CREATE PUBLIC .
 
   PUBLIC SECTION.
-    " TYPES:
-    "   BEGIN OF ty_request_data,
-    "     user     TYPE string,
-    "     password TYPE string,
-    "   END OF ty_request_data .
-    " TYPES:
-    "   BEGIN OF ty_response_data,
-    "     type     TYPE string,
-    "     name     TYPE string,
-    "     filename TYPE string,
-    "     package  TYPE string,
-    "     status   TYPE string,
-    "     message  TYPE string,
-    "   END OF ty_response_data .
-    " TYPES:
-    "   tt_response_data TYPE TABLE OF ty_response_data .
     TYPES:
       BEGIN OF ty_abapgit_file,
         filename    TYPE string,
@@ -63,7 +47,7 @@ CLASS zcl_abapgit_res_repo_stage DEFINITION PUBLIC INHERITING FROM cl_adt_rest_r
                 iv_obj_name       TYPE sobj_name
                 is_wbtype         TYPE wbobjtype
       RETURNING VALUE(rv_adt_uri) TYPE string
-      RAISING cx_adt_uri_mapping .
+      RAISING   cx_adt_uri_mapping .
 
     METHODS get_file_links
       IMPORTING
@@ -76,7 +60,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
+CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
 
 
   METHOD get.
@@ -133,46 +117,48 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
 *------ Process data to output structure
         LOOP AT lt_repo_items ASSIGNING <ls_repo_items>.
 *-------- consider only those files which already exist locally
-          IF <ls_repo_items>-lstate IS NOT INITIAL.
-            CLEAR: ls_object, ls_object_ref.
+          CLEAR: ls_object, ls_object_ref.
 
 *------ Header DATA
-            IF <ls_repo_items>-obj_name IS INITIAL. "non-code and meta files
+          IF <ls_repo_items>-obj_name IS INITIAL. "non-code and meta files
 
 *---------- handle non-code and meta files
-              IF <ls_repo_items>-files IS NOT INITIAL.
-                ls_object_ref-name = 'non-code and meta files'. "if the logic is proper move the text to a message class
-              ENDIF.
-            ELSE.
-              ls_object_ref-name = <ls_repo_items>-obj_name.
-              ls_object_ref-type = <ls_repo_items>-obj_type.
+            IF <ls_repo_items>-files IS NOT INITIAL.
+              ls_object_ref-name = 'non-code and meta files'. "if the logic is proper move the text to a message class
+            ENDIF.
+          ELSE.
+            ls_object_ref-name = <ls_repo_items>-obj_name.
+            ls_object_ref-type = <ls_repo_items>-obj_type.
 
-              IF <ls_repo_items>-obj_type IS NOT INITIAL.
+            IF <ls_repo_items>-obj_type IS NOT INITIAL.
 *------------ GET object workbench key
-                ls_obj_wbtype   = get_object_wb_type(
-                  iv_obj_name = <ls_repo_items>-obj_name  iv_obj_type = <ls_repo_items>-obj_type ).
-                ls_object-wbkey = cl_wb_object_type=>get_global_id_from_global_type( p_global_type = ls_obj_wbtype ).
+              ls_obj_wbtype   = get_object_wb_type(
+                iv_obj_name = <ls_repo_items>-obj_name  iv_obj_type = <ls_repo_items>-obj_type ).
+              ls_object-wbkey = cl_wb_object_type=>get_global_id_from_global_type( p_global_type = ls_obj_wbtype ).
 
 *------------ GET adt uri
-                ls_object_ref-uri = get_object_adt_uri(
-                  iv_obj_name = <ls_repo_items>-obj_name  is_wbtype = ls_obj_wbtype ).
-              ENDIF.
+              ls_object_ref-uri = get_object_adt_uri(
+                iv_obj_name = <ls_repo_items>-obj_name  is_wbtype = ls_obj_wbtype ).
             ENDIF.
-            ls_object-object_ref = ls_object_ref.
+          ENDIF.
+          ls_object-object_ref = ls_object_ref.
 
 *------ File specific DATA
-            CLEAR: ls_file, lt_file.
-            LOOP AT <ls_repo_items>-files ASSIGNING <ls_repo_file>.
-              ls_file-path = <ls_repo_file>-path.
-              ls_file-filename = <ls_repo_file>-filename.
-              ls_file-remotestate = <ls_repo_file>-rstate.
-              ls_file-localstate = <ls_repo_file>-lstate.
-              ls_file-atom_links = get_file_links( iv_repo_key = lo_repo_online->get_key( )
-                iv_filename = ls_file-filename ).
-              INSERT ls_file INTO TABLE lt_file.
-            ENDLOOP.
-            ls_object-files = lt_file.
+          CLEAR: ls_file, lt_file.
+          LOOP AT <ls_repo_items>-files ASSIGNING <ls_repo_file>.
+            ls_file-path = <ls_repo_file>-path.
+            ls_file-filename = <ls_repo_file>-filename.
+            ls_file-remotestate = <ls_repo_file>-rstate.
+            ls_file-localstate = <ls_repo_file>-lstate.
+            ls_file-atom_links = get_file_links( iv_repo_key = lo_repo_online->get_key( )
+              iv_filename = ls_file-filename ).
+            INSERT ls_file INTO TABLE lt_file.
+          ENDLOOP.
+          ls_object-files = lt_file.
+          IF <ls_repo_items>-lstate IS NOT INITIAL.
             INSERT ls_object INTO TABLE ls_response_data-unstaged_objects.
+          ELSE.
+            INSERT ls_object INTO TABLE ls_response_data-ignored_objects.
           ENDIF.
         ENDLOOP.
 *------ Author and Committer details
@@ -251,14 +237,14 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
 
   METHOD get_object_adt_uri.
 
-    DATA: lv_name TYPE seu_objkey,
-          lv_type TYPE wbobjtype,
+    DATA: lv_name    TYPE seu_objkey,
+          lv_type    TYPE wbobjtype,
           lv_request TYPE REF TO cl_wb_request.
     TRY.
         DATA(lv_mapper) = cl_adt_uri_mapper=>get_instance( ).
 
         lv_name  = CONV #( iv_obj_name ).
-        lv_type-objtype_tr = is_wbtype-objtype_tr .
+        lv_type-objtype_tr = is_wbtype-objtype_tr.
         lv_type-subtype_wb = is_wbtype-subtype_wb.
 
         TRY.
