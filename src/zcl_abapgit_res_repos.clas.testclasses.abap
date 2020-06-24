@@ -288,10 +288,10 @@ ENDCLASS.
 
 CLASS ltcl_abapgit_repos_resource DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
   PRIVATE SECTION.
-    DATA: request_stub           TYPE REF TO cl_adt_rest_request_stub,
-          response_spy           TYPE REF TO cl_adt_rest_response_spy,
-          abapgit_repos_resource TYPE REF TO zcl_abapgit_res_repos,
-          request_data_v2        TYPE zcl_abapgit_res_repos=>tt_request_data.
+    DATA: mv_request_stub           TYPE REF TO cl_adt_rest_request_stub,
+          mv_response_spy           TYPE REF TO cl_adt_rest_response_spy,
+          mv_abapgit_repos_resource TYPE REF TO zcl_abapgit_res_repos,
+          mv_request_data_v2        TYPE zcl_abapgit_res_repos=>tt_request_data.
     METHODS:
       setup,
       no_content_type_header FOR TESTING RAISING cx_static_check,
@@ -301,26 +301,26 @@ ENDCLASS.
 CLASS ltcl_abapgit_repos_resource IMPLEMENTATION.
 
   METHOD setup.
-    CREATE OBJECT me->request_stub.
-    CREATE OBJECT me->response_spy.
-    CREATE OBJECT me->abapgit_repos_resource.
-    me->abapgit_repos_resource->set_abapgit_provider( io_abapgit_provider = NEW lcl_abapgit_provider_default( ) ).
+    CREATE OBJECT me->mv_request_stub.
+    CREATE OBJECT me->mv_response_spy.
+    CREATE OBJECT me->mv_abapgit_repos_resource.
+    me->mv_abapgit_repos_resource->set_abapgit_provider( io_abapgit_provider = NEW lcl_abapgit_provider_default( ) ).
   ENDMETHOD.
 
   METHOD no_content_type_header.
-    me->abapgit_repos_resource->post( request  = me->request_stub
-                                      response = me->response_spy ).
+    me->mv_abapgit_repos_resource->post( request  = me->mv_request_stub
+                                      response = me->mv_response_spy ).
 
     cl_abap_unit_assert=>assert_equals( exp = cl_rest_status_code=>gc_client_error_bad_request
-                                        act = me->response_spy->get_status( ) ).
+                                        act = me->mv_response_spy->get_status( ) ).
   ENDMETHOD.
 
   METHOD standard_v2.
 
-    me->request_stub->add_header_field( key   = if_http_header_fields=>content_type
+    me->mv_request_stub->add_header_field( key   = if_http_header_fields=>content_type
                                         value = zcl_abapgit_res_repos=>co_content_type_repo_v2 ).
 
-    me->request_data_v2 = VALUE #( (
+    me->mv_request_data_v2 = VALUE #( (
                                       url = 'https://github.com/Wunderfitz/jak.git'
                                       branch = 'refs/heads/master'
                                       package = 'TESCHD_JAK'
@@ -331,14 +331,13 @@ CLASS ltcl_abapgit_repos_resource IMPLEMENTATION.
                                       package = 'TESCHD_YY'
                                     ) ).
 
-    me->request_stub->set_body_data( data = me->request_data_v2 ).
+    me->mv_request_stub->set_body_data( data = me->mv_request_data_v2 ).
 
-    me->abapgit_repos_resource->post( request  = me->request_stub
-                                      response = me->response_spy ).
+    me->mv_abapgit_repos_resource->post( request  = me->mv_request_stub
+                                      response = me->mv_response_spy ).
 
     cl_abap_unit_assert=>assert_equals( exp = cl_rest_status_code=>gc_success_created
-                                        act = me->response_spy->get_status( ) ).
+                                        act = me->mv_response_spy->get_status( ) ).
 
   ENDMETHOD.
-
 ENDCLASS.

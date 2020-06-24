@@ -1,99 +1,97 @@
 <?sap.transform simple?>
-<tt:transform
-    xmlns:tt="http://www.sap.com/transformation-templates"
-    xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_STAGE"
-    xmlns:abapgitstaging="http://www.sap.com/adt/abapgit/staging"
-template="abapgitstaging" version="0.1">
-    <tt:root name="ABAPGITSTAGING" type="cl:ty_abapgit_staging"/>
-    <tt:include name="zabapgit_st_repo_stage_object" template="abapgitobject"/>
-    <tt:template name="abapgitstaging">
-        <abapgitstaging:abapgitstaging tt:extensible="deep">
-            <!-- Unstaged Objects -->
-            <abapgitstaging:unstaged_objects>
-                <tt:cond check="exist(ABAPGITSTAGING.unstaged_objects)">
-                    <tt:cond check="not-initial(ABAPGITSTAGING.unstaged_objects)">
-                        <tt:apply name="abapgitobjects">
-                            <tt:with-root name="abapgitobjects" ref="ABAPGITSTAGING.unstaged_objects"/>
-                        </tt:apply>
-                    </tt:cond>
-                </tt:cond>
-            </abapgitstaging:unstaged_objects>
-            <!-- Staged Objects -->
-            <abapgitstaging:staged_objects tt:extensible="deep">
-                <tt:cond check="exist(ABAPGITSTAGING.staged_objects)">
-                    <tt:cond check="not-initial(ABAPGITSTAGING.staged_objects)">
-                        <tt:apply name="abapgitobjects">
-                            <tt:with-root name="abapgitobjects" ref="ABAPGITSTAGING.staged_objects"/>
-                        </tt:apply>
-                    </tt:cond>
-                </tt:cond>
-            </abapgitstaging:staged_objects>
-            <!-- Ignored Objects -->
-            <abapgitstaging:ignored_objects tt:extensible="deep">
-                <tt:cond check="exist(ABAPGITSTAGING.ignored_objects)">
-                    <tt:cond check="not-initial(ABAPGITSTAGING.ignored_objects)">
-                        <tt:apply name="abapgitobjects">
-                            <tt:with-root name="abapgitobjects" ref="ABAPGITSTAGING.ignored_objects"/>
-                        </tt:apply>
-                    </tt:cond>
-                </tt:cond>
-            </abapgitstaging:ignored_objects>
-            <!-- Comment -->
-            <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment)">
-                <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment)">
-                    <abapgitstaging:abapgit_comment>
-                        <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.comment)">
-                            <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.comment)">
-                                <tt:attribute name="abapgitstaging:comment" value-ref="ABAPGITSTAGING.abapgit_comment.comment"/>
-                            </tt:cond>
-                        </tt:cond>
-                        <!-- Author -->
-                        <abapgitstaging:author tt:extensible="deep">
-                            <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.author.name)">
-                                <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.author.name)">
-                                    <tt:attribute name="abapgitstaging:name" value-ref="ABAPGITSTAGING.abapgit_comment.author.name"/>
-                                </tt:cond>
-                            </tt:cond>
-                            <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.author.email)">
-                                <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.author.email)">
-                                    <tt:attribute name="abapgitstaging:email" value-ref="ABAPGITSTAGING.abapgit_comment.author.email"/>
-                                </tt:cond>
-                            </tt:cond>
-                        </abapgitstaging:author>
-                        <!-- Committer -->
-                        <abapgitstaging:committer tt:extensible="deep">
-                            <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.committer.name)">
-                                <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.committer.name)">
-                                    <tt:attribute name="abapgitstaging:name" value-ref="ABAPGITSTAGING.abapgit_comment.committer.name"/>
-                                </tt:cond>
-                            </tt:cond>
-                            <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.committer.email)">
-                                <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.committer.email)">
-                                    <tt:attribute name="abapgitstaging:email" value-ref="ABAPGITSTAGING.abapgit_comment.committer.email"/>
-                                </tt:cond>
-                            </tt:cond>
-                        </abapgitstaging:committer>
-                    </abapgitstaging:abapgit_comment>
-                </tt:cond>
-            </tt:cond>
-            <!-- atom links -->
-            <tt:cond check="exist(ABAPGITSTAGING.atom_links)">
-                <tt:cond check="not-initial(ABAPGITSTAGING.atom_links)">
-                    <tt:apply name="atomLinks">
-                        <tt:with-root name="atom_Links" ref="ABAPGITSTAGING.atom_links"/>
-                    </tt:apply>
-                </tt:cond>
-            </tt:cond>
-        </abapgitstaging:abapgitstaging>
-    </tt:template>
-    <tt:template name="abapgitobjects">
-        <tt:context>
-            <tt:root name="abapgitobjects" type="cl:tt_abapgit_object"/>
-        </tt:context>
-        <tt:loop name="object_loop" ref=".abapgitobjects">
-            <tt:apply name="abapgitobject">
-                <tt:with-root name="ABAPGITOBJECT" ref="$object_loop"/>
-            </tt:apply>
-        </tt:loop>
-    </tt:template>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" 
+ xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_STAGE" 
+ xmlns:abapgitstaging="http://www.sap.com/adt/abapgit/staging" template="abapgitstaging" version="0.1">
+ <tt:root name="ABAPGITSTAGING" type="cl:ty_abapgit_staging"/>
+ <tt:include name="zabapgit_st_repo_stage_object" template="abapgitobject"/>
+ <tt:template name="abapgitstaging">
+  <abapgitstaging:abapgitstaging tt:extensible="deep">
+   <!-- Unstaged Objects -->
+   <abapgitstaging:unstaged_objects>
+    <tt:cond check="exist(ABAPGITSTAGING.unstaged_objects)">
+     <tt:cond check="not-initial(ABAPGITSTAGING.unstaged_objects)">
+      <tt:apply name="abapgitobjects">
+       <tt:with-root name="abapgitobjects" ref="ABAPGITSTAGING.unstaged_objects"/>
+      </tt:apply>
+     </tt:cond>
+    </tt:cond>
+   </abapgitstaging:unstaged_objects>
+   <!-- Staged Objects -->
+   <abapgitstaging:staged_objects tt:extensible="deep">
+    <tt:cond check="exist(ABAPGITSTAGING.staged_objects)">
+     <tt:cond check="not-initial(ABAPGITSTAGING.staged_objects)">
+      <tt:apply name="abapgitobjects">
+       <tt:with-root name="abapgitobjects" ref="ABAPGITSTAGING.staged_objects"/>
+      </tt:apply>
+     </tt:cond>
+    </tt:cond>
+   </abapgitstaging:staged_objects>
+   <!-- Ignored Objects -->
+   <abapgitstaging:ignored_objects tt:extensible="deep">
+    <tt:cond check="exist(ABAPGITSTAGING.ignored_objects)">
+     <tt:cond check="not-initial(ABAPGITSTAGING.ignored_objects)">
+      <tt:apply name="abapgitobjects">
+       <tt:with-root name="abapgitobjects" ref="ABAPGITSTAGING.ignored_objects"/>
+      </tt:apply>
+     </tt:cond>
+    </tt:cond>
+   </abapgitstaging:ignored_objects>
+   <!-- Comment -->
+   <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment)">
+    <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment)">
+     <abapgitstaging:abapgit_comment>
+      <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.comment)">
+       <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.comment)">
+        <tt:attribute name="abapgitstaging:comment" value-ref="ABAPGITSTAGING.abapgit_comment.comment"/>
+       </tt:cond>
+      </tt:cond>
+      <!-- Author -->
+      <abapgitstaging:author tt:extensible="deep">
+       <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.author.name)">
+        <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.author.name)">
+         <tt:attribute name="abapgitstaging:name" value-ref="ABAPGITSTAGING.abapgit_comment.author.name"/>
+        </tt:cond>
+       </tt:cond>
+       <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.author.email)">
+        <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.author.email)">
+         <tt:attribute name="abapgitstaging:email" value-ref="ABAPGITSTAGING.abapgit_comment.author.email"/>
+        </tt:cond>
+       </tt:cond>
+      </abapgitstaging:author>
+      <!-- Committer -->
+      <abapgitstaging:committer tt:extensible="deep">
+       <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.committer.name)">
+        <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.committer.name)">
+         <tt:attribute name="abapgitstaging:name" value-ref="ABAPGITSTAGING.abapgit_comment.committer.name"/>
+        </tt:cond>
+       </tt:cond>
+       <tt:cond check="exist(ABAPGITSTAGING.abapgit_comment.committer.email)">
+        <tt:cond check="not-initial(ABAPGITSTAGING.abapgit_comment.committer.email)">
+         <tt:attribute name="abapgitstaging:email" value-ref="ABAPGITSTAGING.abapgit_comment.committer.email"/>
+        </tt:cond>
+       </tt:cond>
+      </abapgitstaging:committer>
+     </abapgitstaging:abapgit_comment>
+    </tt:cond>
+   </tt:cond>
+   <!-- atom links -->
+   <tt:cond check="exist(ABAPGITSTAGING.atom_links)">
+    <tt:cond check="not-initial(ABAPGITSTAGING.atom_links)">
+     <tt:apply name="atomLinks">
+      <tt:with-root name="atom_Links" ref="ABAPGITSTAGING.atom_links"/>
+     </tt:apply>
+    </tt:cond>
+   </tt:cond>
+  </abapgitstaging:abapgitstaging>
+ </tt:template>
+ <tt:template name="abapgitobjects">
+  <tt:context>
+   <tt:root name="abapgitobjects" type="cl:tt_abapgit_object"/>
+  </tt:context>
+  <tt:loop name="object_loop" ref=".abapgitobjects">
+   <tt:apply name="abapgitobject">
+    <tt:with-root name="ABAPGITOBJECT" ref="$object_loop"/>
+   </tt:apply>
+  </tt:loop>
+ </tt:template>
 </tt:transform>

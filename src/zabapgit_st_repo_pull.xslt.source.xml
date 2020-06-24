@@ -1,33 +1,34 @@
 <?sap.transform simple?>
-<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_PULL" template="main" version="0.1">
-  <tt:root name="REPOSITORY" type="cl:TY_REQUEST_PULL_DATA"/>
-  <tt:template name="MAIN">
-    <repository tt:extensible="deep">
-       <tt:group>
-        <tt:cond frq="?">
-          <branch>
-            <tt:value ref="REPOSITORY.branch"/>
-          </branch>
-        </tt:cond>
-        <tt:cond frq="?">
-          <transportRequest>
-            <tt:value ref="REPOSITORY.transportRequest"/>
-          </transportRequest>
-        </tt:cond>
-        <tt:cond frq="?">
-          <user>
-            <tt:value ref="REPOSITORY.user"/>
-          </user>
-        </tt:cond>
-        <tt:cond frq="?">
-          <password>
-            <tt:value ref="REPOSITORY.password"/>
-          </password>
-        </tt:cond>
-        <tt:cond>
-           <!--ignore field if not defined-->
-        </tt:cond>
-      </tt:group>
-    </repository>
-  </tt:template>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" 
+ xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_PULL" template="main" version="0.1">
+ <tt:root name="REPOSITORY" type="cl:TY_REQUEST_PULL_DATA"/>
+ <tt:template name="MAIN">
+  <repository tt:extensible="deep">
+   <tt:group>
+    <tt:cond frq="?">
+     <branch>
+      <tt:value ref="REPOSITORY.branch"/>
+     </branch>
+    </tt:cond>
+    <tt:cond frq="?">
+     <transportRequest>
+      <tt:value ref="REPOSITORY.transportRequest"/>
+     </transportRequest>
+    </tt:cond>
+    <tt:cond frq="?">
+     <user>
+      <tt:value ref="REPOSITORY.user"/>
+     </user>
+    </tt:cond>
+    <tt:cond frq="?">
+     <password>
+      <tt:value ref="REPOSITORY.password"/>
+     </password>
+    </tt:cond>
+    <tt:cond>
+     <!--ignore field if not defined-->
+    </tt:cond>
+   </tt:group>
+  </repository>
+ </tt:template>
 </tt:transform>

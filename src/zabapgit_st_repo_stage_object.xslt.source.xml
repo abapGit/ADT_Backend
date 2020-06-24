@@ -1,78 +1,77 @@
 <?sap.transform simple?>
-<tt:transform
-    xmlns:tt="http://www.sap.com/transformation-templates"
-    xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_STAGE"
-    xmlns:abapgitstaging="http://www.sap.com/adt/abapgit/staging">
-    <tt:root name="ABAPGITOBJECT" type="cl:ty_abapgit_object"/>
-    <tt:include name="sadt_atom" template="atomLinks"/>
-    <tt:include name="sadt_object_reference" template="objectReferenceAttributes"/>
-    <tt:template>
-        <tt:apply name="abapgitobject">
-            <tt:with-root name="ABAPGITOBJECT" ref="ABAPGITOBJECT"/>
-        </tt:apply>
-    </tt:template>
-    <tt:template name="abapgitobject">
-        <tt:context>
-            <tt:root name="ABAPGITOBJECT" type="cl:ty_abapgit_object"/>
-        </tt:context>
-        <abapgitstaging:abapgitobject tt:extensible="deep">
-            <!-- object workbench key -->
-            <tt:cond check="not-initial(ABAPGITOBJECT.wbkey)">
-                <tt:attribute name="abapgitstaging:wbkey" value-ref="ABAPGITOBJECT.wbkey"/>
-            </tt:cond>
-            <!-- object version -->
-            <tt:cond check="not-initial(ABAPGITOBJECT.version)">
-                <tt:attribute name="abapgitstaging:version" value-ref="ABAPGITOBJECT.version"/>
-            </tt:cond>
-            <!-- object reference -->
-            <tt:cond check="exist(ABAPGITOBJECT.object_ref)">
-                <tt:cond check="not-initial(ABAPGITOBJECT.object_ref)">
-                    <tt:apply name="objectReferenceAttributes">
-                        <tt:with-root name="OBJECT_REFERENCE" ref="ABAPGITOBJECT.object_ref"/>
-                    </tt:apply>
-                </tt:cond>
-            </tt:cond>
-            <!-- git files -->
-            <tt:cond check="exist(ABAPGITOBJECT.files)">
-                <tt:cond check="not-initial(ABAPGITOBJECT.files)">
-                    <tt:loop name="files" ref="ABAPGITOBJECT.files">
-                        <abapgitstaging:abapgitfile>
-                            <!-- file name -->
-                            <tt:cond check="not-initial($files.filename)">
-                                <tt:attribute name="abapgitstaging:name" value-ref="$files.filename"/>
-                            </tt:cond>
-                            <!-- file path -->
-                            <tt:cond check="not-initial($files.path)">
-                                <tt:attribute name="abapgitstaging:path" value-ref="$files.path"/>
-                            </tt:cond>
-                            <!-- file local state -->
-                            <tt:cond check="not-initial($files.localState)">
-                                <tt:attribute name="abapgitstaging:localState" value-ref="$files.localState"/>
-                            </tt:cond>
-                            <!-- file remote state -->
-                            <tt:cond check="not-initial($files.remoteState)">
-                                <tt:attribute name="abapgitstaging:remoteState" value-ref="$files.remoteState"/>
-                            </tt:cond>
-                            <!-- atom links -->
-                            <tt:cond check="exist($files.atom_links)">
-                                <tt:cond check="not-initial($files.atom_links)">
-                                    <tt:apply name="atomLinks">
-                                        <tt:with-root name="atom_Links" ref="$files.atom_links"/>
-                                    </tt:apply>
-                                </tt:cond>
-                            </tt:cond>
-                        </abapgitstaging:abapgitfile>
-                    </tt:loop>
-                </tt:cond>
-            </tt:cond>
-            <!-- atom links -->
-            <tt:cond check="exist(ABAPGITOBJECT.atom_links)">
-                <tt:cond check="not-initial(ABAPGITOBJECT.atom_links)">
-                    <tt:apply name="atomLinks">
-                        <tt:with-root name="atom_Links" ref="ABAPGITOBJECT.atom_links"/>
-                    </tt:apply>
-                </tt:cond>
-            </tt:cond>
-        </abapgitstaging:abapgitobject>
-    </tt:template>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" 
+ xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_STAGE" 
+ xmlns:abapgitstaging="http://www.sap.com/adt/abapgit/staging">
+ <tt:root name="ABAPGITOBJECT" type="cl:ty_abapgit_object"/>
+ <tt:include name="sadt_atom" template="atomLinks"/>
+ <tt:include name="sadt_object_reference" template="objectReferenceAttributes"/>
+ <tt:template>
+  <tt:apply name="abapgitobject">
+   <tt:with-root name="ABAPGITOBJECT" ref="ABAPGITOBJECT"/>
+  </tt:apply>
+ </tt:template>
+ <tt:template name="abapgitobject">
+  <tt:context>
+   <tt:root name="ABAPGITOBJECT" type="cl:ty_abapgit_object"/>
+  </tt:context>
+  <abapgitstaging:abapgitobject tt:extensible="deep">
+   <!-- object workbench key -->
+   <tt:cond check="not-initial(ABAPGITOBJECT.wbkey)">
+    <tt:attribute name="abapgitstaging:wbkey" value-ref="ABAPGITOBJECT.wbkey"/>
+   </tt:cond>
+   <!-- object version -->
+   <tt:cond check="not-initial(ABAPGITOBJECT.version)">
+    <tt:attribute name="abapgitstaging:version" value-ref="ABAPGITOBJECT.version"/>
+   </tt:cond>
+   <!-- object reference -->
+   <tt:cond check="exist(ABAPGITOBJECT.object_ref)">
+    <tt:cond check="not-initial(ABAPGITOBJECT.object_ref)">
+     <tt:apply name="objectReferenceAttributes">
+      <tt:with-root name="OBJECT_REFERENCE" ref="ABAPGITOBJECT.object_ref"/>
+     </tt:apply>
+    </tt:cond>
+   </tt:cond>
+   <!-- git files -->
+   <tt:cond check="exist(ABAPGITOBJECT.files)">
+    <tt:cond check="not-initial(ABAPGITOBJECT.files)">
+     <tt:loop name="files" ref="ABAPGITOBJECT.files">
+      <abapgitstaging:abapgitfile>
+       <!-- file name -->
+       <tt:cond check="not-initial($files.filename)">
+        <tt:attribute name="abapgitstaging:name" value-ref="$files.filename"/>
+       </tt:cond>
+       <!-- file path -->
+       <tt:cond check="not-initial($files.path)">
+        <tt:attribute name="abapgitstaging:path" value-ref="$files.path"/>
+       </tt:cond>
+       <!-- file local state -->
+       <tt:cond check="not-initial($files.localState)">
+        <tt:attribute name="abapgitstaging:localState" value-ref="$files.localState"/>
+       </tt:cond>
+       <!-- file remote state -->
+       <tt:cond check="not-initial($files.remoteState)">
+        <tt:attribute name="abapgitstaging:remoteState" value-ref="$files.remoteState"/>
+       </tt:cond>
+       <!-- atom links -->
+       <tt:cond check="exist($files.atom_links)">
+        <tt:cond check="not-initial($files.atom_links)">
+         <tt:apply name="atomLinks">
+          <tt:with-root name="atom_Links" ref="$files.atom_links"/>
+         </tt:apply>
+        </tt:cond>
+       </tt:cond>
+      </abapgitstaging:abapgitfile>
+     </tt:loop>
+    </tt:cond>
+   </tt:cond>
+   <!-- atom links -->
+   <tt:cond check="exist(ABAPGITOBJECT.atom_links)">
+    <tt:cond check="not-initial(ABAPGITOBJECT.atom_links)">
+     <tt:apply name="atomLinks">
+      <tt:with-root name="atom_Links" ref="ABAPGITOBJECT.atom_links"/>
+     </tt:apply>
+    </tt:cond>
+   </tt:cond>
+  </abapgitstaging:abapgitobject>
+ </tt:template>
 </tt:transform>
