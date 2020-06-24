@@ -8,7 +8,7 @@ Backend implementation of ABAP Development Tools (ADT) REST endpoints. Prerequis
 
 ### Requirements
 
-- [zabapgit](https://github.com/larshp/abapGit) version [1.89 Commit 7133ae4](https://github.com/larshp/abapGit/commit/7133ae4b2908c5526f666bbd9d7a806b012993d2) installed (report only won't work)
+- [zabapgit](https://github.com/larshp/abapGit) version [1.94](https://github.com/larshp/abapGit/releases/tag/v1.94.0) installed (report only won't work)
 - 750
 
 ### Links

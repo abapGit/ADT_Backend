@@ -1,13 +1,14 @@
 <?sap.transform simple?>
-<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPOS" template="REPO_V2" version="0.1">
-  <tt:root name="REPOSITORIES" type="cl:TT_REQUEST_DATA"/>
-  <tt:template name="REPO_V2">
-    <repositories>
-      <tt:loop name="line" ref=".REPOSITORIES">
-        <tt:call transformation="ZABAPGIT_ST_REPO_POST">
-          <tt:with-root name="REPOSITORY" ref="$line"/>
-        </tt:call>
-      </tt:loop>
-    </repositories>
-  </tt:template>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" 
+ xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPOS" template="REPO_V2" version="0.1">
+ <tt:root name="REPOSITORIES" type="cl:TT_REQUEST_DATA"/>
+ <tt:template name="REPO_V2">
+  <repositories>
+   <tt:loop name="line" ref=".REPOSITORIES">
+    <tt:call transformation="ZABAPGIT_ST_REPO_POST">
+     <tt:with-root name="REPOSITORY" ref="$line"/>
+    </tt:call>
+   </tt:loop>
+  </repositories>
+ </tt:template>
 </tt:transform>

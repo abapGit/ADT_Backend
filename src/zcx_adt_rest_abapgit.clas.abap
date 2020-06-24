@@ -1,47 +1,47 @@
-class ZCX_ADT_REST_ABAPGIT definition
-  public
-  inheriting from CX_ADT_REST
-  final
-  create public .
+CLASS zcx_adt_rest_abapgit DEFINITION
+  PUBLIC
+  INHERITING FROM cx_adt_rest
+  FINAL
+  CREATE PUBLIC .
 
-  public section.
+  PUBLIC SECTION.
 
-    interfaces IF_T100_DYN_MSG .
+    INTERFACES if_t100_dyn_msg .
 
-    class-methods RAISE_WITH_ERROR
-      importing
-        !IX_ERROR       type ref to CX_ROOT
-        !IV_HTTP_STATUS type I optional
-      raising
-        ZCX_ADT_REST_ABAPGIT .
-    methods CONSTRUCTOR
-      importing
-        TEXTID          like IF_T100_MESSAGE=>T100KEY optional
-        PREVIOUS        like PREVIOUS optional
-        SUBTYPE         type SADT_EXC_TYPE optional
-        MSGV1           type SYMSGV optional
-        MSGV2           type SYMSGV optional
-        MSGV3           type SYMSGV optional
-        MSGV4           type SYMSGV optional
-        !PROPERTIES     type ref to IF_ADT_EXCEPTION_PROPERTIES optional
-        !IV_HTTP_STATUS type I optional.
+    CLASS-METHODS raise_with_error
+      IMPORTING
+        !ix_error       TYPE REF TO cx_root
+        !iv_http_status TYPE i OPTIONAL
+      RAISING
+        zcx_adt_rest_abapgit .
+    METHODS constructor
+      IMPORTING
+        textid          LIKE if_t100_message=>t100key OPTIONAL
+        previous        LIKE previous OPTIONAL
+        subtype         TYPE sadt_exc_type OPTIONAL
+        msgv1           TYPE symsgv OPTIONAL
+        msgv2           TYPE symsgv OPTIONAL
+        msgv3           TYPE symsgv OPTIONAL
+        msgv4           TYPE symsgv OPTIONAL
+        !properties     TYPE REF TO if_adt_exception_properties OPTIONAL
+        !iv_http_status TYPE i OPTIONAL.
 
-    methods GET_HTTP_STATUS
-        redefinition .
-    methods GET_NAMESPACE
-        redefinition .
-    methods GET_TYPE
-        redefinition .
-  private section.
+    METHODS get_http_status
+        REDEFINITION .
+    METHODS get_namespace
+        REDEFINITION .
+    METHODS get_type
+        REDEFINITION .
+  PRIVATE SECTION.
 
-    data MV_HTTP_STATUS type I.
+    DATA mv_http_status TYPE i.
 
-    class-methods GET_MESSAGE_VAR
-      importing
-        IX_ERROR          type ref to CX_ROOT
-        IV_ATTRIBUTE      type CSEQUENCE
-      returning
-        value(RV_MSG_VAR) type SYMSGV.
+    CLASS-METHODS get_message_var
+      IMPORTING
+        ix_error          TYPE REF TO cx_root
+        iv_attribute      TYPE csequence
+      RETURNING
+        VALUE(rv_msg_var) TYPE symsgv.
 
 ENDCLASS.
 
@@ -50,102 +50,102 @@ ENDCLASS.
 CLASS zcx_adt_rest_abapgit IMPLEMENTATION.
 
 
-  method CONSTRUCTOR ##ADT_SUPPRESS_GENERATION.
-    call method SUPER->CONSTRUCTOR
-      exporting
-        PREVIOUS   = PREVIOUS
-        SUBTYPE    = SUBTYPE
-        MSGV1      = MSGV1
-        MSGV2      = MSGV2
-        MSGV3      = MSGV3
-        MSGV4      = MSGV4
-        PROPERTIES = PROPERTIES.
-    clear ME->TEXTID.
-    if TEXTID is initial.
-      IF_T100_MESSAGE~T100KEY = IF_T100_MESSAGE=>DEFAULT_TEXTID.
-    else.
-      IF_T100_MESSAGE~T100KEY = TEXTID.
-    endif.
-    MV_HTTP_STATUS = IV_HTTP_STATUS.
-  endmethod.
+  METHOD constructor ##ADT_SUPPRESS_GENERATION.
+    CALL METHOD super->constructor
+      EXPORTING
+        previous   = previous
+        subtype    = subtype
+        msgv1      = msgv1
+        msgv2      = msgv2
+        msgv3      = msgv3
+        msgv4      = msgv4
+        properties = properties.
+    CLEAR me->textid.
+    IF textid IS INITIAL.
+      if_t100_message~t100key = if_t100_message=>default_textid.
+    ELSE.
+      if_t100_message~t100key = textid.
+    ENDIF.
+    mv_http_status = iv_http_status.
+  ENDMETHOD.
 
 
-  method GET_HTTP_STATUS.
+  METHOD get_http_status.
 
-    if MV_HTTP_STATUS is initial.
-      RESULT = CL_REST_STATUS_CODE=>GC_CLIENT_ERROR_BAD_REQUEST.
-    else.
-      RESULT = MV_HTTP_STATUS.
-    endif.
+    IF mv_http_status IS INITIAL.
+      result = cl_rest_status_code=>gc_client_error_bad_request.
+    ELSE.
+      result = mv_http_status.
+    ENDIF.
 
-  endmethod.
-
-
-  method GET_MESSAGE_VAR.
-
-    if IV_ATTRIBUTE is not initial.
-      assign IX_ERROR->(IV_ATTRIBUTE) to field-symbol(<LV_MSG_VAR>).
-      RV_MSG_VAR = <LV_MSG_VAR>.
-    endif.
-
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_NAMESPACE.
+  METHOD get_message_var.
 
-    RESULT = 'org.abapgit.adt'.
+    IF iv_attribute IS NOT INITIAL.
+      ASSIGN ix_error->(iv_attribute) TO FIELD-SYMBOL(<lv_msg_var>).
+      rv_msg_var = <lv_msg_var>.
+    ENDIF.
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_TYPE ##needed.
-  endmethod.
+  METHOD get_namespace.
+
+    result = 'org.abapgit.adt'.
+
+  ENDMETHOD.
 
 
-  method RAISE_WITH_ERROR.
+  METHOD get_type ##needed.
+  ENDMETHOD.
 
-    data LX_ERROR        type ref to CX_ROOT.
-    data LO_MESSAGE      type ref to IF_T100_MESSAGE.
-    data LO_NEXT_MESSAGE type ref to IF_T100_MESSAGE.
 
-    LX_ERROR = IX_ERROR.
-    LO_MESSAGE ?= IX_ERROR.
+  METHOD raise_with_error.
 
-    while LX_ERROR->PREVIOUS is bound.
+    DATA lx_error        TYPE REF TO cx_root.
+    DATA lo_message      TYPE REF TO if_t100_message.
+    DATA lo_next_message TYPE REF TO if_t100_message.
 
-      try.
-          LO_NEXT_MESSAGE ?= LX_ERROR->PREVIOUS.
-          LO_MESSAGE = LO_NEXT_MESSAGE.
-          LX_ERROR = LX_ERROR->PREVIOUS.
-        catch CX_SY_MOVE_CAST_ERROR.
-          exit.
-      endtry.
+    lx_error = ix_error.
+    lo_message ?= ix_error.
 
-    endwhile.
+    WHILE lx_error->previous IS BOUND.
 
-    data(LS_MSG_KEY) = LO_MESSAGE->T100KEY.
+      TRY.
+          lo_next_message ?= lx_error->previous.
+          lo_message = lo_next_message.
+          lx_error = lx_error->previous.
+        CATCH cx_sy_move_cast_error.
+          EXIT.
+      ENDTRY.
 
-    data(LV_MSGV1) = GET_MESSAGE_VAR(
-      IX_ERROR     = LX_ERROR
-      IV_ATTRIBUTE = LS_MSG_KEY-ATTR1 ).
-    data(LV_MSGV2) = GET_MESSAGE_VAR(
-      IX_ERROR     = LX_ERROR
-      IV_ATTRIBUTE = LS_MSG_KEY-ATTR2 ).
-    data(LV_MSGV3) = GET_MESSAGE_VAR(
-      IX_ERROR     = LX_ERROR
-      IV_ATTRIBUTE = LS_MSG_KEY-ATTR3 ).
-    data(LV_MSGV4) = GET_MESSAGE_VAR(
-      IX_ERROR     = LX_ERROR
-      IV_ATTRIBUTE = LS_MSG_KEY-ATTR4 ).
+    ENDWHILE.
 
-    raise exception type ZCX_ADT_REST_ABAPGIT
-      message
-      id LS_MSG_KEY-MSGID
-      type 'E'
-      number LS_MSG_KEY-MSGNO
-      with LV_MSGV1 LV_MSGV2 LV_MSGV3 LV_MSGV4
-      exporting
-        IV_HTTP_STATUS = IV_HTTP_STATUS.
+    DATA(ls_msg_key) = lo_message->t100key.
 
-  endmethod.
+    DATA(lv_msgv1) = get_message_var(
+      ix_error     = lx_error
+      iv_attribute = ls_msg_key-attr1 ).
+    DATA(lv_msgv2) = get_message_var(
+      ix_error     = lx_error
+      iv_attribute = ls_msg_key-attr2 ).
+    DATA(lv_msgv3) = get_message_var(
+      ix_error     = lx_error
+      iv_attribute = ls_msg_key-attr3 ).
+    DATA(lv_msgv4) = get_message_var(
+      ix_error     = lx_error
+      iv_attribute = ls_msg_key-attr4 ).
+
+    RAISE EXCEPTION TYPE zcx_adt_rest_abapgit
+      MESSAGE
+      ID ls_msg_key-msgid
+      TYPE 'E'
+      NUMBER ls_msg_key-msgno
+      WITH lv_msgv1 lv_msgv2 lv_msgv3 lv_msgv4
+      EXPORTING
+        iv_http_status = iv_http_status.
+
+  ENDMETHOD.
 ENDCLASS.

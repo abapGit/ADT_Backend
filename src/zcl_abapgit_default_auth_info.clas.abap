@@ -25,7 +25,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_DEFAULT_AUTH_INFO IMPLEMENTATION.
+CLASS zcl_abapgit_default_auth_info IMPLEMENTATION.
 
 
   METHOD get_passoword.
