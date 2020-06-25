@@ -44,7 +44,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
 
     CALL TRANSFORMATION zabapgit_st_repo_info_ext_req
       SOURCE XML lv_input_xml
-      RESULT     (lt_result).
+      RESULT (lt_result).
 
     cl_abap_unit_assert=>assert_equals( exp = 1 act = lines( lt_result ) ).
     cl_abap_unit_assert=>assert_equals( act = ls_data-url      exp = 'a' ).
@@ -78,7 +78,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
 
     CALL TRANSFORMATION zabapgit_st_repo_info_ext_req
       SOURCE XML lv_input_xml
-      RESULT     (lt_result).
+      RESULT (lt_result).
 
     cl_abap_unit_assert=>assert_equals( exp = 1 act = lines( lt_result ) ).
     cl_abap_unit_assert=>assert_equals( act = ls_data-url      exp = 'a' ).
@@ -113,7 +113,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
 
     CALL TRANSFORMATION zabapgit_st_repo_info_ext_req
       SOURCE XML lv_input_xml
-      RESULT     (lt_result).
+      RESULT (lt_result).
 
     cl_abap_unit_assert=>assert_equals( exp = 1 act = lines( lt_result ) ).
     cl_abap_unit_assert=>assert_equals( act = ls_data-url      exp = 'a' ).
@@ -147,7 +147,7 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
 
     CALL TRANSFORMATION zabapgit_st_repo_info_ext_req
       SOURCE XML lv_input_xml
-      RESULT     (lt_result).
+      RESULT (lt_result).
 
     cl_abap_unit_assert=>assert_equals( exp = 1 act = lines( lt_result ) ).
     cl_abap_unit_assert=>assert_equals( act = ls_data-url      exp = 'a' ).

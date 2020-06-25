@@ -20,7 +20,7 @@
   "syntax": {
     "version": "v750",
     "errorNamespace": "^(Z|Y)",
-    "globalConstants": [],
+    "globalConstants": ["swbm_c_op_display"],
     "globalMacros": []
   },
   "rules": {
@@ -101,7 +101,7 @@
     "empty_statement": true,
     "exit_or_check": true,
     "exporting": true,
-    "functional_writing": false,
+    "functional_writing": true,
     "global_class": true,
     "identical_form_names": true,
     "indentation": {

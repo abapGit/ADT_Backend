@@ -15,7 +15,7 @@ CLASS zcl_abapgit_res_repo_push DEFINITION PUBLIC INHERITING FROM cl_adt_rest_re
       END OF ty_request_pull_data .
     TYPES:
       BEGIN OF ty_repo_w_links.
-        INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
+        INCLUDE TYPE zif_abapgit_persistence=>ty_repo.
     TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links .
     TYPES:

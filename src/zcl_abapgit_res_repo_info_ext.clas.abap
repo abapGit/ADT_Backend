@@ -86,7 +86,7 @@ CLASS zcl_abapgit_res_repo_info_ext IMPLEMENTATION.
         ls_response_data-access_mode = zcl_abapgit_http_adt=>determine_access_level( ls_request_data-url ).
 
         "Retrieve list of branches for repo
-        IF  ls_response_data-access_mode = 'PUBLIC'  OR
+        IF ls_response_data-access_mode = 'PUBLIC'  OR
           ( ls_response_data-access_mode = 'PRIVATE' AND
             ls_request_data-user         IS NOT INITIAL AND
             ls_request_data-password     IS NOT INITIAL ).

@@ -23,7 +23,7 @@ CLASS zcl_abapgit_res_repos DEFINITION
       tt_request_data TYPE TABLE OF ty_request_data.
 
     TYPES: BEGIN OF ty_repo_w_links.
-             INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
+             INCLUDE TYPE zif_abapgit_persistence=>ty_repo.
     TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
 
