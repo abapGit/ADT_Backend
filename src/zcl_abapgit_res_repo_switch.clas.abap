@@ -28,7 +28,7 @@ CLASS zcl_abapgit_res_repo_switch IMPLEMENTATION.
 
         request->get_uri_attribute( EXPORTING name = 'key' mandatory = abap_true IMPORTING value = lv_repo_key ).
         request->get_uri_attribute( EXPORTING name = 'branch' mandatory = abap_true IMPORTING value = lv_branch ).
-        request->get_uri_query_parameter(  EXPORTING name = 'create' IMPORTING value = lv_createifmissing ).
+        request->get_uri_query_parameter( EXPORTING name = 'create' IMPORTING value = lv_createifmissing ).
         lv_username = lv_inner_req->get_header_field( iv_name = 'Username' ).
 *------ Client encodes password with base64 algorithm
         lv_password = lo_http_utility->decode_base64( lv_inner_req->get_header_field( iv_name = 'Password' ) ).
@@ -56,7 +56,7 @@ CLASS zcl_abapgit_res_repo_switch IMPLEMENTATION.
 
   METHOD branch_exists.
     TRY.
-        DATA(lo_branches) = zcl_abapgit_git_transport=>branches( iv_repo->get_url(  ) ).
+        DATA(lo_branches) = zcl_abapgit_git_transport=>branches( iv_repo->get_url( ) ).
         lo_branches->find_by_name( iv_branch_name ).
         rs_exists = abap_true.
       CATCH cx_root INTO DATA(cx).

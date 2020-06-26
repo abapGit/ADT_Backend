@@ -20,7 +20,7 @@ CLASS zcl_abapgit_res_repo_pull DEFINITION
       END OF ty_request_pull_data.
     TYPES:
       BEGIN OF ty_repo_w_links.
-        INCLUDE  TYPE zif_abapgit_persistence=>ty_repo.
+        INCLUDE TYPE zif_abapgit_persistence=>ty_repo.
     TYPES:   links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links.
     TYPES:
@@ -199,9 +199,9 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
     DATA: lv_msg TYPE string.
 
     " only check transport if package requires a transport
-    DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get(  iv_repo_key ).
+    DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( iv_repo_key ).
 
-    DATA(lv_package_key) = lo_repo->get_package(  ).
+    DATA(lv_package_key) = lo_repo->get_package( ).
 
     DATA(lo_package) = zcl_abapgit_factory=>get_sap_package( lv_package_key ).
 
@@ -214,13 +214,13 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
 
       IF sy-subrc NE 0.
         lv_msg = |Transport { is_request_data-transportrequest } not found|.
-        zcx_abapgit_exception=>raise( lv_msg  ).
+        zcx_abapgit_exception=>raise( lv_msg ).
       ELSEIF ls_e070-trstatus NE 'D'.
         lv_msg = |Transport { is_request_data-transportrequest } is released or protected|.
-        zcx_abapgit_exception=>raise( lv_msg  ).
+        zcx_abapgit_exception=>raise( lv_msg ).
       ELSEIF ls_e070-as4user NE sy-uname.
         lv_msg = |Transport { is_request_data-transportrequest } is not owned by { sy-uname }|.
-        zcx_abapgit_exception=>raise( lv_msg  ).
+        zcx_abapgit_exception=>raise( lv_msg ).
       ENDIF.
 
     ENDIF.
