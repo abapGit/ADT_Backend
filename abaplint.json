@@ -24,6 +24,7 @@
     "globalMacros": []
   },
   "rules": {
+    "reduce_string_templates": true,
     "downport": false,
     "forbidden_void_type": false,
     "line_break_multiple_parameters": false,
@@ -167,6 +168,7 @@
       "idoc": "^Z",
       "ssfo": "^Z",
       "ssst": "^Z",
+      "shlp": "^Z",
       "xslt": "^Z"
     },
     "obsolete_statement": {
