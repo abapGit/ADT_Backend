@@ -88,7 +88,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
 
     lv_username = request->get_inner_rest_request( )->get_header_field( iv_name = 'Username' ).
 *-------Client encodes password with base64 algorithm
-    lv_password =  lo_http_utility->decode_base64(
+    lv_password = lo_http_utility->decode_base64(
        request->get_inner_rest_request( )->get_header_field( iv_name = 'Password' ) ).
 
     IF lv_username IS NOT INITIAL AND lv_password IS NOT INITIAL.
