@@ -51,7 +51,7 @@
     "check_ddic": true,
     "check_include": true,
     "check_no_handler_pragma": true,
-    "check_syntax": false,
+    "check_syntax": true,
     "check_text_elements": true,
     "check_transformation_exists": true,
     "constructor_visibility_public": true,
