@@ -1,7 +1,4 @@
 *"* use this source file for your ABAP unit test classes
-DEFINE add_xml.
-  CONCATENATE lv_xml &1 INTO lv_xml.
-END-OF-DEFINITION. "#EC NEEDED
 
 CLASS ltcl_simple_transformation DEFINITION FINAL FOR TESTING
   DURATION SHORT
@@ -30,12 +27,12 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository_ext>'.
-    add_xml '  <url>a</url>'.
-    add_xml '  <user>b</user>'.
-    add_xml '  <password>c</password>'.
-    add_xml '</repository_ext>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository_ext>|.
+    lv_xml = lv_xml && |  <url>a</url>|.
+    lv_xml = lv_xml && |  <user>b</user>|.
+    lv_xml = lv_xml && |  <password>c</password>|.
+    lv_xml = lv_xml && |</repository_ext>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
@@ -64,12 +61,12 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository_ext>'.
-    add_xml '  <url>a</url>'.
-    add_xml '  <password>c</password>'. "exchanged by USER
-    add_xml '  <user>b</user>'. "exchanged by PASSWORD
-    add_xml '</repository_ext>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository_ext>|.
+    lv_xml = lv_xml && |  <url>a</url>|.
+    lv_xml = lv_xml && |  <password>c</password>|. "exchanged by USER
+    lv_xml = lv_xml && |  <user>b</user>|. "exchanged by PASSWORD
+    lv_xml = lv_xml && |</repository_ext>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
@@ -98,13 +95,13 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository_ext>'.
-    add_xml '  <url>a</url>'.
-    add_xml '  <dontexist>x</dontexist>'. "field don't exist in structure
-    add_xml '  <user>b</user>'.
-    add_xml '  <password>c</password>'.
-    add_xml '</repository_ext>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository_ext>|.
+    lv_xml = lv_xml && |  <url>a</url>|.
+    lv_xml = lv_xml && |  <dontexist>x</dontexist>|. "field don't exist in structure
+    lv_xml = lv_xml && |  <user>b</user>|.
+    lv_xml = lv_xml && |  <password>c</password>|.
+    lv_xml = lv_xml && |</repository_ext>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
@@ -133,12 +130,12 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository_ext>'.
-    add_xml '  <url>a</url>'.
-    "add_xml '  <user>b</user>'.  "field missing(!)
-    add_xml '  <password>c</password>'.
-    add_xml '</repository_ext>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository_ext>|.
+    lv_xml = lv_xml && |  <url>a</url>|.
+    " lv_xml = lv_xml && |  <user>b</user>|.  "field missing(!)
+    lv_xml = lv_xml && |  <password>c</password>|.
+    lv_xml = lv_xml && |</repository_ext>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
