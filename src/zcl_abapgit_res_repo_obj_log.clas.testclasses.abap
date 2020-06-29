@@ -1,7 +1,4 @@
 *"* use this source file for your ABAP unit test classes
-DEFINE add_xml.
-  CONCATENATE lv_xml &1 INTO lv_xml.
-END-OF-DEFINITION. "#EC NEEDED
 
 CLASS ltcl_simple_transformation DEFINITION FINAL FOR TESTING
   DURATION SHORT
@@ -30,13 +27,13 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository>'.
-    add_xml '  <branch>a</branch>'.
-    add_xml '  <transportRequest>b</transportRequest>'.
-    add_xml '  <user>c</user>'.
-    add_xml '  <password>d</password>'.
-    add_xml '</repository>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository>|.
+    lv_xml = lv_xml && |  <branch>a</branch>|.
+    lv_xml = lv_xml && |  <transportRequest>b</transportRequest>|.
+    lv_xml = lv_xml && |  <user>c</user>|.
+    lv_xml = lv_xml && |  <password>d</password>|.
+    lv_xml = lv_xml && |</repository>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
@@ -66,13 +63,13 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository>'.
-    add_xml '  <branch>a</branch>'.
-    add_xml '  <user>c</user>'. "exchanged by TRANSPORTREQUEST
-    add_xml '  <transportRequest>b</transportRequest>'. "exchanged by USER
-    add_xml '  <password>d</password>'.
-    add_xml '</repository>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository>|.
+    lv_xml = lv_xml && |  <branch>a</branch>|.
+    lv_xml = lv_xml && |  <user>c</user>|. "exchanged by TRANSPORTREQUEST
+    lv_xml = lv_xml && |  <transportRequest>b</transportRequest>|. "exchanged by USER
+    lv_xml = lv_xml && |  <password>d</password>|.
+    lv_xml = lv_xml && |</repository>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
@@ -102,14 +99,14 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository>'.
-    add_xml '  <branch>a</branch>'.
-    add_xml '  <transportRequest>b</transportRequest>'.
-    add_xml '  <dontexist>x</dontexist>'. "field don't exist in structure
-    add_xml '  <user>c</user>'.
-    add_xml '  <password>d</password>'.
-    add_xml '</repository>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository>|.
+    lv_xml = lv_xml && |  <branch>a</branch>|.
+    lv_xml = lv_xml && |  <transportRequest>b</transportRequest>|.
+    lv_xml = lv_xml && |  <dontexist>x</dontexist>|. "field don't exist in structure
+    lv_xml = lv_xml && |  <user>c</user>|.
+    lv_xml = lv_xml && |  <password>d</password>|.
+    lv_xml = lv_xml && |</repository>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
@@ -139,13 +136,13 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
     FIELD-SYMBOLS <lv_value> TYPE any.
 
     DATA lv_xml TYPE string.
-    add_xml '<?xml version="1.0" encoding="utf-8"?>'.
-    add_xml '<repository>'.
-    add_xml '  <branch>a</branch>'.
-    "add_xml '  <transportRequest>b</transportRequest>'. "field missing(!)
-    add_xml '  <user>c</user>'.
-    add_xml '  <password>d</password>'.
-    add_xml '</repository>'.
+    lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
+    lv_xml = lv_xml && |<repository>|.
+    lv_xml = lv_xml && |  <branch>a</branch>|.
+    " lv_xml = lv_xml && |  <transportRequest>b</transportRequest>|. "field missing(!)
+    lv_xml = lv_xml && |  <user>c</user>|.
+    lv_xml = lv_xml && |  <password>d</password>|.
+    lv_xml = lv_xml && |</repository>|.
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
