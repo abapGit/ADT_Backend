@@ -1,6 +1,6 @@
 <?sap.transform simple?>
-<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" 
- xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_STAGE" 
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates"
+ xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_STAGE"
  xmlns:abapgitstaging="http://www.sap.com/adt/abapgit/staging" template="abapgitstaging" version="0.1">
  <tt:root name="ABAPGITSTAGING" type="cl:ty_abapgit_staging"/>
  <tt:include name="zabapgit_st_repo_stage_object" template="abapgitobject"/>

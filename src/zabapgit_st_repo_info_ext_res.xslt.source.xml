@@ -1,5 +1,5 @@
 <?sap.transform simple?>
-<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" 
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates"
  xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_INFO_EXT" template="main" version="0.1">
  <tt:root name="REPOSITORY_EXTERNAL" type="cl:TY_RESPONSE_DATA"/>
  <tt:template name="MAIN">

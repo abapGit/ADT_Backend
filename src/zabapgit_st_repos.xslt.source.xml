@@ -1,5 +1,5 @@
 <?sap.transform simple?>
-<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" 
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates"
  xmlns:cl="http://www.sap.com/abapxml/types/class-pool/zcl_abapgit_res_repos" template="temp" version="0.1">
  <tt:root name="REPOSITORIES" type="cl:tt_repo_w_links"/>
  <tt:include name="SADT_ATOM" template="atomLink"/>
