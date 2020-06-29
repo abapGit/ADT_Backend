@@ -20,7 +20,9 @@
   "syntax": {
     "version": "v750",
     "errorNamespace": "^(Z|Y)",
-    "globalConstants": ["swbm_c_op_display"],
+    "globalConstants": [
+      "swbm_c_op_display"
+    ],
     "globalMacros": []
   },
   "rules": {
@@ -34,7 +36,7 @@
     "allowed_object_types": false,
     "ambiguous_statement": true,
     "avoid_use": {
-      "define": false,
+      "define": true,
       "endselect": true,
       "execSQL": true,
       "kernelCall": true,
@@ -145,12 +147,16 @@
       "returning": "^R._.*$",
       "changing": "^C._.*$",
       "exporting": "^E._.*$",
-      "ignoreNames": ["P_TASK"]
+      "ignoreNames": [
+        "P_TASK"
+      ]
     },
     "mix_returning": true,
     "msag_consistency": true,
     "nesting": {
-      "exclude": ["src/zcl_abapgit_res_repo_push.clas.abap"],
+      "exclude": [
+        "src/zcl_abapgit_res_repo_push.clas.abap"
+      ],
       "depth": 5
     },
     "object_naming": {
