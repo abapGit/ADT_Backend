@@ -24,6 +24,7 @@
     "globalMacros": []
   },
   "rules": {
+    "reduce_string_templates": true,
     "downport": false,
     "forbidden_void_type": false,
     "line_break_multiple_parameters": false,
@@ -50,11 +51,11 @@
     "check_ddic": true,
     "check_include": true,
     "check_no_handler_pragma": true,
-    "check_syntax": false,
+    "check_syntax": true,
     "check_text_elements": true,
     "check_transformation_exists": true,
     "constructor_visibility_public": true,
-    "double_space": false,
+    "double_space": true,
     "empty_line_in_statement": true,
     "empty_structure": true,
     "forbidden_identifier": true,
@@ -71,7 +72,9 @@
     "no_public_attributes": false,
     "prefer_returning_to_exporting": true,
     "preferred_compare_operator": false,
-    "prefix_is_current_class": false,
+    "prefix_is_current_class": {
+      "omitMeInstanceCalls": false
+    },
     "release_idoc": true,
     "remove_descriptions": false,
     "rfc_error_handling": true,
@@ -167,6 +170,7 @@
       "idoc": "^Z",
       "ssfo": "^Z",
       "ssst": "^Z",
+      "shlp": "^Z",
       "xslt": "^Z"
     },
     "obsolete_statement": {
