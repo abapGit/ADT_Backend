@@ -26,6 +26,9 @@
     "globalMacros": []
   },
   "rules": {
+    "begin_single_include": true,
+    "names_no_dash": true,
+    "parser_missing_space": true,
     "reduce_string_templates": true,
     "downport": false,
     "forbidden_void_type": false,
