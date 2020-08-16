@@ -61,7 +61,6 @@
     "empty_line_in_statement": true,
     "empty_structure": true,
     "forbidden_identifier": true,
-    "form_no_dash": true,
     "form_tables_obsolete": true,
     "fully_type_constants": true,
     "if_in_if": true,
@@ -87,7 +86,6 @@
     "sql_escape_host_variables": false,
     "tabl_enhancement_category": true,
     "try_without_catch": true,
-    "type_begin_single_include": true,
     "type_form_parameters": true,
     "types_naming": false,
     "unknown_types": true,
@@ -129,11 +127,7 @@
       "local": "^LCL_.*$",
       "test": "^LTCL_.*$"
     },
-    "local_variable_names": {
-      "expectedData": "^L._.*$",
-      "expectedConstant": "^LC_.*$",
-      "expectedFS": "^<L._.*>$"
-    },
+    "local_variable_names": false,
     "max_one_statement": true,
     "message_exists": true,
     "method_length": {
@@ -182,6 +176,7 @@
     "obsolete_statement": {
       "setExtended": true,
       "occurs": true,
+      "withHeaderLine": true,
       "refresh": true,
       "compute": true,
       "add": true,
