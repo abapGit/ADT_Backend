@@ -295,8 +295,8 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    LOOP AT lt_request_data INTO DATA(single_repository).
-      me->import_repository( is_request_data = single_repository ).
+    LOOP AT lt_request_data INTO DATA(ls_single_repository).
+      me->import_repository( is_request_data = ls_single_repository ).
     ENDLOOP.
 
     "[A4C_AGIT_LOG]

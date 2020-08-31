@@ -59,7 +59,7 @@ CLASS zcl_abapgit_res_repo_switch IMPLEMENTATION.
         DATA(lo_branches) = zcl_abapgit_git_transport=>branches( iv_repo->get_url( ) ).
         lo_branches->find_by_name( iv_branch_name ).
         rs_exists = abap_true.
-      CATCH cx_root INTO DATA(cx).
+      CATCH cx_root INTO DATA(lx_error).
         rs_exists = abap_false.
     ENDTRY.
   ENDMETHOD.
