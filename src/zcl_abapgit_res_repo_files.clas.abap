@@ -65,17 +65,17 @@ CLASS zcl_abapgit_res_repo_files IMPLEMENTATION.
         IF lv_version = co_file_remote. "if requested is remote version
 
           "read the contents of the requested remote file
-          DATA(lv_rfiles) = lo_repo->get_files_remote( ).
-          READ TABLE lv_rfiles WITH KEY filename = lv_filename TRANSPORTING all fields INTO DATA(rfile).
-          lv_source = cl_abap_codepage=>convert_from( source = rfile-data ignore_cerr = abap_true codepage = co_utf_8 ).
+          DATA(lt_rfiles) = lo_repo->get_files_remote( ).
+          READ TABLE lt_rfiles WITH KEY filename = lv_filename TRANSPORTING all fields INTO DATA(ls_rfile).
+          lv_source = cl_abap_codepage=>convert_from( source = ls_rfile-data ignore_cerr = abap_true codepage = co_utf_8 ).
 
         ELSE. "if requested is local version
 
           "read the contents of the requested remote file
-          DATA(lv_lfiles) = lo_repo->get_files_local( ).
-          READ TABLE lv_lfiles WITH KEY file-filename = lv_filename TRANSPORTING all fields INTO DATA(lfile).
+          DATA(lt_lfiles) = lo_repo->get_files_local( ).
+          READ TABLE lt_lfiles WITH KEY file-filename = lv_filename TRANSPORTING all fields INTO DATA(ls_lfile).
           lv_source = cl_abap_codepage=>convert_from(
-            source = lfile-file-data ignore_cerr = abap_true codepage = co_utf_8 ).
+            source = ls_lfile-file-data ignore_cerr = abap_true codepage = co_utf_8 ).
 
         ENDIF.
         response->set_body_data( content_handler = lo_content_handler data = lv_source ).
