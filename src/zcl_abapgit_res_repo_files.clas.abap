@@ -67,7 +67,9 @@ CLASS zcl_abapgit_res_repo_files IMPLEMENTATION.
           "read the contents of the requested remote file
           DATA(lt_rfiles) = lo_repo->get_files_remote( ).
           READ TABLE lt_rfiles WITH KEY filename = lv_filename TRANSPORTING all fields INTO DATA(ls_rfile).
-          lv_source = cl_abap_codepage=>convert_from( source = ls_rfile-data ignore_cerr = abap_true codepage = co_utf_8 ).
+          lv_source = cl_abap_codepage=>convert_from( source = ls_rfile-data
+                                                      ignore_cerr = abap_true
+                                                      codepage = co_utf_8 ).
 
         ELSE. "if requested is local version
 
