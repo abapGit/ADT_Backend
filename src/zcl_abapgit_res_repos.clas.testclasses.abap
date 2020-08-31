@@ -110,15 +110,16 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
 
     DATA lv_xml TYPE string.
     lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
-    lv_xml = lv_xml && |<repository>|.
-    lv_xml = lv_xml && |  <branch>a</branch>|.
-    lv_xml = lv_xml && |  <package>b</package>|.
-    lv_xml = lv_xml && |  <transportRequest>c</transportRequest>|.
-    lv_xml = lv_xml && |  <dontexist>x</dontexist>|. "field don't exist in structure
-    lv_xml = lv_xml && |  <url>d</url>|.
-    lv_xml = lv_xml && |  <user>e</user>|.
-    lv_xml = lv_xml && |  <password>f</password>|.
-    lv_xml = lv_xml && |</repository>|.
+    lv_xml = lv_xml && |<abapgitrepo:repository xmlns:abapgitrepo="http://www.sap.com/adt/abapgit/repositories">|.
+    lv_xml = lv_xml && |  <abapgitrepo:branchName>a</abapgitrepo:branchName>|.
+    lv_xml = lv_xml && |  <abapgitrepo:package>b</abapgitrepo:package>|.
+    lv_xml = lv_xml && |  <abapgitrepo:transportRequest>c</abapgitrepo:transportRequest>|.
+    lv_xml = lv_xml && |  <abapgitrepo:newField>x</abapgitrepo:newField>|.
+    lv_xml = lv_xml && |  <abapgitrepo:url>d</abapgitrepo:url>|.
+    lv_xml = lv_xml && |  <abapgitrepo:remoteUser>e</abapgitrepo:remoteUser>|.
+    lv_xml = lv_xml && |  <abapgitrepo:remotePassword>f</abapgitrepo:remotePassword>|.
+    lv_xml = lv_xml && |</abapgitrepo:repository>|.
+
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.
@@ -151,14 +152,15 @@ CLASS ltcl_simple_transformation IMPLEMENTATION.
 
     DATA lv_xml TYPE string.
     lv_xml = lv_xml && |<?xml version="1.0" encoding="utf-8"?>|.
-    lv_xml = lv_xml && |<repository>|.
-    lv_xml = lv_xml && |  <branch>a</branch>|.
-    lv_xml = lv_xml && |  <package>b</package>|.
-    lv_xml = lv_xml && |  <transportRequest>c</transportRequest>|.
-    "lv_xml = lv_xml && |  <url>d</url>|. "field missing(!)
-    lv_xml = lv_xml && |  <user>e</user>|.
-    lv_xml = lv_xml && |  <password>f</password>|.
-    lv_xml = lv_xml && |</repository>|.
+    lv_xml = lv_xml && |<abapgitrepo:repository xmlns:abapgitrepo="http://www.sap.com/adt/abapgit/repositories">|.
+    lv_xml = lv_xml && |  <abapgitrepo:branchName>a</abapgitrepo:branchName>|.
+    lv_xml = lv_xml && |  <abapgitrepo:package>b</abapgitrepo:package>|.
+    lv_xml = lv_xml && |  <abapgitrepo:transportRequest>c</abapgitrepo:transportRequest>|.
+   "lv_xml = lv_xml && |  <abapgitrepo:url>d</abapgitrepo:url>|.  url is missing
+    lv_xml = lv_xml && |  <abapgitrepo:remoteUser>e</abapgitrepo:remoteUser>|.
+    lv_xml = lv_xml && |  <abapgitrepo:remotePassword>f</abapgitrepo:remotePassword>|.
+    lv_xml = lv_xml && |</abapgitrepo:repository>|.
+
     CALL TRANSFORMATION id SOURCE XML lv_xml RESULT XML lv_input_xml.
 
     APPEND INITIAL LINE TO lt_result ASSIGNING <lt_result>.

@@ -1,44 +1,46 @@
 <?sap.transform simple?>
 <tt:transform xmlns:tt="http://www.sap.com/transformation-templates"
- xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPOS" template="main" version="0.1">
- <tt:root name="REPOSITORY" type="cl:TY_REQUEST_DATA"/>
- <tt:template name="MAIN">
-  <repository tt:extensible="deep">
-   <tt:group>
-    <tt:cond frq="?">
-     <branch>
-      <tt:value ref="REPOSITORY.branch"/>
-     </branch>
-    </tt:cond>
-    <tt:cond frq="?">
-     <package>
-      <tt:value ref="REPOSITORY.package"/>
-     </package>
-    </tt:cond>
-    <tt:cond frq="?">
-     <transportRequest>
-      <tt:value ref="REPOSITORY.transportRequest"/>
-     </transportRequest>
-    </tt:cond>
-    <tt:cond frq="?">
-     <url>
-      <tt:value ref="REPOSITORY.url"/>
-     </url>
-    </tt:cond>
-    <tt:cond frq="?">
-     <user>
-      <tt:value ref="REPOSITORY.user"/>
-     </user>
-    </tt:cond>
-    <tt:cond frq="?">
-     <password>
-      <tt:value ref="REPOSITORY.password"/>
-     </password>
-    </tt:cond>
-    <tt:cond>
-     <!--ignore field if not defined-->
-    </tt:cond>
-   </tt:group>
-  </repository>
- </tt:template>
+xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPOS"
+xmlns:abapgitrepo="http://www.sap.com/adt/abapgit/repositories"
+template="main" version="0.1">
+  <tt:root name="REPOSITORY" type="cl:TY_REQUEST_DATA"/>
+  <tt:template name="MAIN">
+    <abapgitrepo:repository tt:extensible="deep">
+       <tt:group>
+        <tt:cond frq="?">
+          <abapgitrepo:branchName>
+            <tt:value ref="REPOSITORY.branch"/>
+          </abapgitrepo:branchName>
+        </tt:cond>
+        <tt:cond frq="?">
+          <abapgitrepo:package>
+            <tt:value ref="REPOSITORY.package"/>
+          </abapgitrepo:package>
+        </tt:cond>
+        <tt:cond frq="?">
+          <abapgitrepo:transportRequest>
+            <tt:value ref="REPOSITORY.transportRequest"/>
+          </abapgitrepo:transportRequest>
+        </tt:cond>
+        <tt:cond frq="?">
+          <abapgitrepo:url>
+            <tt:value ref="REPOSITORY.url"/>
+          </abapgitrepo:url>
+        </tt:cond>
+        <tt:cond frq="?">
+          <abapgitrepo:remoteUser>
+            <tt:value ref="REPOSITORY.user"/>
+          </abapgitrepo:remoteUser>
+        </tt:cond>
+        <tt:cond frq="?">
+          <abapgitrepo:remotePassword>
+            <tt:value ref="REPOSITORY.password"/>
+          </abapgitrepo:remotePassword>
+        </tt:cond>
+        <tt:cond>
+           <!--ignore field if not defined-->
+        </tt:cond>
+      </tt:group>
+    </abapgitrepo:repository>
+  </tt:template>
 </tt:transform>

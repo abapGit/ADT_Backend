@@ -1,29 +1,29 @@
 <?sap.transform simple?>
-<tt:transform xmlns:tt="http://www.sap.com/transformation-templates"
- xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_INFO_EXT" template="main" version="0.1">
- <tt:root name="REPOSITORY_EXTERNAL_REQ" type="cl:TY_REQUEST_DATA"/>
- <tt:template name="MAIN">
-  <repository_ext tt:extensible="deep">
-   <tt:group>
-    <tt:cond frq="?">
-     <url>
-      <tt:value ref="REPOSITORY_EXTERNAL_REQ.url"/>
-     </url>
-    </tt:cond>
-    <tt:cond frq="?">
-     <user>
-      <tt:value ref="REPOSITORY_EXTERNAL_REQ.user"/>
-     </user>
-    </tt:cond>
-    <tt:cond frq="?">
-     <password>
-      <tt:value ref="REPOSITORY_EXTERNAL_REQ.password"/>
-     </password>
-    </tt:cond>
-    <tt:cond>
-     <!--ignore field if not defined-->
-    </tt:cond>
-   </tt:group>
-  </repository_ext>
- </tt:template>
+<tt:transform xmlns:tt="http://www.sap.com/transformation-templates" xmlns:cl="http://www.sap.com/abapxml/types/class-pool/ZCL_ABAPGIT_RES_REPO_INFO_EXT"
+xmlns:abapgitexternalrepo="http://www.sap.com/adt/abapgit/externalRepo" template="main" version="0.1">
+  <tt:root name="REPOSITORY_EXTERNAL_REQ" type="cl:TY_REQUEST_DATA"/>
+  <tt:template name="MAIN">
+    <abapgitexternalrepo:externalRepoInfoRequest tt:extensible="deep">
+      <tt:group>
+        <tt:cond frq="?">
+          <abapgitexternalrepo:url>
+            <tt:value ref="REPOSITORY_EXTERNAL_REQ.url"/>
+          </abapgitexternalrepo:url>
+        </tt:cond>
+        <tt:cond frq="?">
+          <abapgitexternalrepo:user>
+            <tt:value ref="REPOSITORY_EXTERNAL_REQ.user"/>
+          </abapgitexternalrepo:user>
+        </tt:cond>
+        <tt:cond frq="?">
+          <abapgitexternalrepo:password>
+            <tt:value ref="REPOSITORY_EXTERNAL_REQ.password"/>
+          </abapgitexternalrepo:password>
+        </tt:cond>
+        <tt:cond>
+           <!--ignore field if not defined-->
+        </tt:cond>
+      </tt:group>
+    </abapgitexternalrepo:externalRepoInfoRequest>
+  </tt:template>
 </tt:transform>

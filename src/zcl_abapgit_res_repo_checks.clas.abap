@@ -119,8 +119,8 @@ CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
 
 *---------- Raise internal server error, as the connection to github failed from abap server
 *---------- Return the error code from the abapgit exception as part of additional adt exception properties.
-          DATA(iv_properties) = zcx_adt_rest_abapgit=>create_properties( ).
-          iv_properties->add_property(
+          DATA(lv_properties) = zcx_adt_rest_abapgit=>create_properties( ).
+          lv_properties->add_property(
             key = 'http_status'
             value = lv_http_status_string ).
           zcx_adt_rest_abapgit=>raise_with_error( ix_error = lx_abapgit_exception

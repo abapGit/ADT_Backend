@@ -37,10 +37,10 @@ CLASS zcl_abapgit_res_repos DEFINITION
     CONSTANTS co_root_name_post         TYPE string     VALUE 'REPOSITORY'.
     CONSTANTS co_root_name_post_v2      TYPE string     VALUE 'REPOSITORIES'.
     CONSTANTS co_root_name_post_res     TYPE string     VALUE 'OBJECTS'.
-    CONSTANTS co_content_type_repo_v1   TYPE string     VALUE 'application/abapgit.adt.repo.v1+xml' ##NO_TEXT.
-    CONSTANTS co_content_type_repo_v2   TYPE string     VALUE 'application/abapgit.adt.repo.v2+xml' ##NO_TEXT.
-    CONSTANTS co_content_type_repos_v1  TYPE string     VALUE 'application/abapgit.adt.repos.v1+xml' ##NO_TEXT.
-    CONSTANTS co_content_type_object_v1 TYPE string     VALUE 'application/abapgit.adt.repo.object.v1+xml' ##NO_TEXT.
+    CONSTANTS co_content_type_repo_v1   TYPE string     VALUE 'application/abapgit.adt.repo.v3+xml' ##NO_TEXT.
+    CONSTANTS co_content_type_repo_v2   TYPE string     VALUE 'application/abapgit.adt.repo.v4+xml' ##NO_TEXT.
+    CONSTANTS co_content_type_repos_v1  TYPE string     VALUE 'application/abapgit.adt.repos.v2+xml' ##NO_TEXT.
+    CONSTANTS co_content_type_object_v1 TYPE string     VALUE 'application/abapgit.adt.repo.object.v2+xml' ##NO_TEXT.
     CONSTANTS co_st_name_get            TYPE string     VALUE 'ZABAPGIT_ST_REPOS'.
     CONSTANTS co_root_name_get          TYPE string     VALUE 'REPOSITORIES'.
 
@@ -295,8 +295,8 @@ CLASS zcl_abapgit_res_repos IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    LOOP AT lt_request_data INTO DATA(single_repository).
-      me->import_repository( is_request_data = single_repository ).
+    LOOP AT lt_request_data INTO DATA(ls_single_repository).
+      me->import_repository( is_request_data = ls_single_repository ).
     ENDLOOP.
 
     "[A4C_AGIT_LOG]
