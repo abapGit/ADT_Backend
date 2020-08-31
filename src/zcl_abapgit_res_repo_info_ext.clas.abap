@@ -19,9 +19,9 @@ CLASS zcl_abapgit_res_repo_info_ext DEFINITION
       END OF ty_response_data.
 
     CONSTANTS co_content_type_request_v1  TYPE string
-      VALUE 'application/abapgit.adt.repo.info.ext.request.v1+xml' ##NO_TEXT.
+      VALUE 'application/abapgit.adt.repo.info.ext.request.v2+xml' ##NO_TEXT.
     CONSTANTS co_content_type_response_v1 TYPE string
-      VALUE 'application/abapgit.adt.repo.info.ext.response.v1+xml' ##NO_TEXT.
+      VALUE 'application/abapgit.adt.repo.info.ext.response.v2+xml' ##NO_TEXT.
     CONSTANTS co_root_name_request        TYPE string VALUE 'REPOSITORY_EXTERNAL_REQ' ##NO_TEXT.
     CONSTANTS co_st_name_request          TYPE string VALUE 'ZABAPGIT_ST_REPO_INFO_EXT_REQ' ##NO_TEXT.
     CONSTANTS co_st_name_response         TYPE string VALUE 'ZABAPGIT_ST_REPO_INFO_EXT_RES' ##NO_TEXT.
