@@ -2,17 +2,20 @@
 
 # ADT_Backend
 
-Backend implementation of ABAP Development Tools (ADT) REST endpoints. Prerequisite for using [abapGit repositories plugin](https://eclipse.abapgit.org/updatesite/) for ADT.
+Backend implementation of ABAP Development Tools (ADT) REST endpoints. These endpoints are requiered to connect the [abapGit repositories plugin](https://eclipse.abapgit.org/updatesite/) to the abapgit backend.
+
+SAP has also published it's [official sources](https://github.com/SAP/project-odense) as they are provided in the SAP Cloud Platform ABAP Environment product.
 
 **Highly Experimental**
 
 ### Requirements
 
-- [zabapgit](https://github.com/larshp/abapGit) version [1.94](https://github.com/larshp/abapGit/releases/tag/v1.94.0) installed (report only won't work)
+- [zabapgit](https://github.com/larshp/abapGit) version installed (report only won't work)
 - 750
 
 ### Links
 
+- https://github.com/SAP/project-odense
 - https://www.sap.com/documents/2013/04/12289ce1-527c-0010-82c7-eda71af511fa.html
 - https://wiki.scn.sap.com/wiki/display/ABAP/SAPlink+plugin+for+ABAP+in+Eclipse
 - https://blogs.sap.com/2014/08/12/an-example-to-help-you-understand-how-does-adt-work/
