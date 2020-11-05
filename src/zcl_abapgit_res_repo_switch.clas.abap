@@ -2,7 +2,7 @@ CLASS zcl_abapgit_res_repo_switch DEFINITION PUBLIC INHERITING FROM cl_adt_rest_
 
   PUBLIC SECTION.
     METHODS post REDEFINITION.
-protected section.
+  PROTECTED SECTION.
   PRIVATE SECTION.
     METHODS branch_exists IMPORTING iv_repo          TYPE REF TO zcl_abapgit_repo_online
                                     iv_branch_name   TYPE string
