@@ -56,11 +56,13 @@ CLASS zcl_abapgit_res_repo_stage DEFINITION PUBLIC INHERITING FROM cl_adt_rest_r
       RETURNING
         VALUE(rt_links) TYPE if_atom_types=>link_t.
 
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
 
 
   METHOD get.
@@ -104,7 +106,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
         DATA(ls_repo) = zcl_abapgit_persist_factory=>get_repo( )->read( iv_key = lv_repo_key ).
         lo_repo_online ?= lo_repo.
         lo_repo_online->refresh( ).
-        DATA(lv_repo_branch) = lo_repo_online->get_branch_name( ).
+        DATA(lv_repo_branch) = lo_repo_online->get_selected_branch( ).
 
 *------ Retrieve repository content
         CREATE OBJECT lo_repo_content

@@ -2,6 +2,7 @@ CLASS zcl_abapgit_res_repo_switch DEFINITION PUBLIC INHERITING FROM cl_adt_rest_
 
   PUBLIC SECTION.
     METHODS post REDEFINITION.
+  PROTECTED SECTION.
   PRIVATE SECTION.
     METHODS branch_exists IMPORTING iv_repo          TYPE REF TO zcl_abapgit_repo_online
                                     iv_branch_name   TYPE string
@@ -10,7 +11,19 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_switch IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_SWITCH IMPLEMENTATION.
+
+
+  METHOD branch_exists.
+    TRY.
+        DATA(lo_branches) = zcl_abapgit_git_transport=>branches( iv_repo->get_url( ) ).
+        lo_branches->find_by_name( iv_branch_name ).
+        rs_exists = abap_true.
+      CATCH cx_root INTO DATA(lx_error).
+        rs_exists = abap_false.
+    ENDTRY.
+  ENDMETHOD.
+
 
   METHOD post.
     DATA: lv_repo_key        TYPE zif_abapgit_persistence=>ty_value,
@@ -40,7 +53,7 @@ CLASS zcl_abapgit_res_repo_switch IMPLEMENTATION.
         lo_repo ?= zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
 
         IF branch_exists( iv_repo = lo_repo iv_branch_name = lv_branch ) = abap_true.
-          lo_repo->set_branch_name( lv_branch ).
+          lo_repo->select_branch( lv_branch ).
         ELSEIF lv_createifmissing = 'TRUE'.
           lo_repo->create_branch( lv_branch ).
         ENDIF.
@@ -52,15 +65,5 @@ CLASS zcl_abapgit_res_repo_switch IMPLEMENTATION.
             iv_http_status = cl_rest_status_code=>gc_server_error_internal ).
     ENDTRY.
 
-  ENDMETHOD.
-
-  METHOD branch_exists.
-    TRY.
-        DATA(lo_branches) = zcl_abapgit_git_transport=>branches( iv_repo->get_url( ) ).
-        lo_branches->find_by_name( iv_branch_name ).
-        rs_exists = abap_true.
-      CATCH cx_root INTO DATA(lx_error).
-        rs_exists = abap_false.
-    ENDTRY.
   ENDMETHOD.
 ENDCLASS.

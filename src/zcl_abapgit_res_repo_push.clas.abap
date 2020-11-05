@@ -28,13 +28,14 @@ CLASS zcl_abapgit_res_repo_push DEFINITION PUBLIC INHERITING FROM cl_adt_rest_re
 
     METHODS post
         REDEFINITION .
+  PROTECTED SECTION.
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_credentials,
              user     TYPE string,
              password TYPE string,
            END OF ty_credentials.
     TYPES: BEGIN OF ty_push_request,
-            staged_objects  TYPE zcl_abapgit_res_repo_stage=>tt_abapgit_object, "tta4c_abapgit_object,
+             staged_objects  TYPE zcl_abapgit_res_repo_stage=>tt_abapgit_object, "tta4c_abapgit_object,
              abapgit_comment TYPE zif_abapgit_definitions=>ty_comment, "tsa4c_abapgit_comment,
              credentials     TYPE ty_credentials, "tsa4c_abapgit_credentials,
            END OF ty_push_request.
@@ -53,7 +54,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_PUSH IMPLEMENTATION.
 
 
   METHOD post.
@@ -101,7 +102,7 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
         " zcl_abapgit_factory=>get_environment( )->set_repo_action( if_abapgit_app_log=>c_action_push ).
         DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
         lo_repo_online ?= lo_repo.
-        DATA(lv_repo_branch) = lo_repo_online->get_branch_name( ).
+        DATA(lv_repo_branch) = lo_repo_online->get_selected_branch( ).
 
         GET PARAMETER ID 'A4C_AGIT_PUSH_SYNC' FIELD DATA(lv_push_sync).
 *------ Synchronous Processing
