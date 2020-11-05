@@ -56,8 +56,8 @@ CLASS zcl_abapgit_res_repo_stage DEFINITION PUBLIC INHERITING FROM cl_adt_rest_r
       RETURNING
         VALUE(rt_links) TYPE if_atom_types=>link_t.
 
-protected section.
-private section.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
