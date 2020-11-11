@@ -172,7 +172,7 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
         ENDIF.
         IF lv_user IS INITIAL.
           " get default from user master record
-          lv_user = zcl_abapgit_user_master_record=>get_instance( sy-uname )->get_name( ).
+          lv_user = zcl_abapgit_user_record=>get_instance( sy-uname )->get_name( ).
         ENDIF.
 
         DATA(lv_email) = lo_user->get_repo_git_user_email( lo_repo_online->get_url( ) ).
@@ -181,7 +181,7 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
         ENDIF.
         IF lv_email IS INITIAL.
           " get default from user master record
-          lv_email = zcl_abapgit_user_master_record=>get_instance( sy-uname )->get_email( ).
+          lv_email = zcl_abapgit_user_record=>get_instance( sy-uname )->get_email( ).
         ENDIF.
 
         ls_response_data-abapgit_comment-author-name     = lv_user.
