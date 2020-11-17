@@ -5,10 +5,10 @@ INTERFACE lif_abapgit_provider.
   METHODS:
     validate_package IMPORTING iv_package TYPE devclass
                      RAISING   zcx_abapgit_exception,
-    is_tr_check_required IMPORTING iv_package TYPE devclass
+    is_tr_check_required IMPORTING iv_package            TYPE devclass
                          RETURNING VALUE(rv_is_required) TYPE abap_bool
                          RAISING   zcx_abapgit_exception,
-    list_repositories RETURNING VALUE(rt_list) TYPE zif_abapgit_definitions=>ty_repo_ref_tt
+    list_repositories RETURNING VALUE(rt_list) TYPE zif_abapgit_repo_srv=>ty_repo_list
                       RAISING   zcx_abapgit_exception,
     validate_transport_request IMPORTING iv_transport_request TYPE trkorr
                                RAISING   zcx_abapgit_exception,
