@@ -28,6 +28,7 @@
   "rules": {
     "begin_single_include": true,
     "names_no_dash": true,
+    "unused_ddic": true,
     "parser_missing_space": true,
     "reduce_string_templates": true,
     "downport": false,
