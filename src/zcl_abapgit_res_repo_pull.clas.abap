@@ -54,7 +54,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
+CLASS ZCL_ABAPGIT_RES_REPO_PULL IMPLEMENTATION.
 
 
   METHOD post.
@@ -69,8 +69,9 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
       END OF t_obj_result.
     DATA lt_result_table TYPE STANDARD TABLE OF t_obj_result WITH DEFAULT KEY.
     DATA:
-      ls_request_data  TYPE ty_request_pull_data,
-      lv_repo_key      TYPE zif_abapgit_persistence=>ty_value.
+      ls_request_data TYPE ty_request_pull_data,
+      lo_repo         TYPE REF TO zcl_abapgit_repo,
+      lv_repo_key     TYPE zif_abapgit_persistence=>ty_value.
     DATA lo_log TYPE REF TO zcl_abapgit_log.
 
     TRY.
@@ -147,8 +148,9 @@ CLASS zcl_abapgit_res_repo_pull IMPLEMENTATION.
         ENDIF.
 
 *------ Create online repo
-        DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
-        lo_repo->refresh( ).
+        DATA(li_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
+        li_repo->refresh( ).
+        lo_repo ?= li_repo.
 
         DATA(ls_checks) = lo_repo->deserialize_checks( ).
 

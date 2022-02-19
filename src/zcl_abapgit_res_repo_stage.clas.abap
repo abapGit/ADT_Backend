@@ -79,6 +79,7 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
       lt_file          TYPE tt_abapgit_file,
       lo_repo_content  TYPE REF TO zcl_abapgit_repo_content_list,
       lo_http_utility  TYPE REF TO cl_http_utility,
+      lo_repo          TYPE REF TO zcl_abapgit_repo,
       lo_user          TYPE REF TO zif_abapgit_persist_user.
 
     FIELD-SYMBOLS:
@@ -100,15 +101,16 @@ CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
 
     " zcl_abapgit_factory=>get_environment( )->set_repo_action( if_abapgit_app_log=>c_action_push ).
     TRY.
-        DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
+        DATA(li_repo) = zcl_abapgit_repo_srv=>get_instance( )->get( lv_repo_key ).
 
 *-------- Check if a different action is still running
         DATA(ls_repo) = zcl_abapgit_persist_factory=>get_repo( )->read( iv_key = lv_repo_key ).
-        lo_repo_online ?= lo_repo.
+        lo_repo_online ?= li_repo.
         lo_repo_online->refresh( ).
         DATA(lv_repo_branch) = lo_repo_online->get_selected_branch( ).
 
 *------ Retrieve repository content
+        lo_repo ?= li_repo.
         CREATE OBJECT lo_repo_content
           EXPORTING
             io_repo = lo_repo.
