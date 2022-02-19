@@ -41,6 +41,7 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
   METHOD lif_abapgit_provider~perform_import.
 
     DATA lo_log TYPE REF TO zcl_abapgit_log.
+    DATA lo_repo TYPE REF TO zcl_abapgit_repo.
 
     "Set the default transport request
     IF is_request_data-transportrequest IS NOT INITIAL.
@@ -48,13 +49,14 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
     ENDIF.
 
     "Create online repo
-    DATA(lo_repo) = zcl_abapgit_repo_srv=>get_instance( )->new_online(
+    DATA(li_repo) = zcl_abapgit_repo_srv=>get_instance( )->new_online(
          iv_url         = is_request_data-url
          iv_branch_name = is_request_data-branch
          iv_package     = CONV devclass( is_request_data-package ) ).
 
     "Pull objects
-    lo_repo->refresh( ).
+    li_repo->refresh( ).
+    lo_repo ?= li_repo.
 
     DATA(ls_checks) = lo_repo->deserialize_checks( ).
 
