@@ -266,8 +266,10 @@ CLASS lcl_abapgit_provider_default IMPLEMENTATION.
     CASE iv_package.
       WHEN 'TESCHD_JAK'.
         " Good
+        RETURN.
       WHEN 'TESCHD_YY'.
         " Good
+        RETURN.
       WHEN OTHERS.
         cl_abap_unit_assert=>fail( msg = |Unexpected package { iv_package } | ).
     ENDCASE.
