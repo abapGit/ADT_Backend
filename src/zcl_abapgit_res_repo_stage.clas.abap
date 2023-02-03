@@ -26,7 +26,7 @@ CLASS zcl_abapgit_res_repo_stage DEFINITION PUBLIC INHERITING FROM cl_adt_rest_r
         unstaged_objects TYPE tt_abapgit_object,
         staged_objects   TYPE tt_abapgit_object,
         ignored_objects  TYPE tt_abapgit_object,
-        abapgit_comment  TYPE zif_abapgit_definitions=>ty_comment,
+        abapgit_comment  TYPE zif_abapgit_git_definitions=>ty_comment,
         atom_links       TYPE if_atom_types=>link_t,
       END OF ty_abapgit_staging .
 
@@ -62,7 +62,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_RES_REPO_STAGE IMPLEMENTATION.
+CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
 
 
   METHOD get.

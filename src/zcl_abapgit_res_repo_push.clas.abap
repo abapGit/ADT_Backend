@@ -36,7 +36,7 @@ CLASS zcl_abapgit_res_repo_push DEFINITION PUBLIC INHERITING FROM cl_adt_rest_re
            END OF ty_credentials.
     TYPES: BEGIN OF ty_push_request,
              staged_objects  TYPE zcl_abapgit_res_repo_stage=>tt_abapgit_object, "tta4c_abapgit_object,
-             abapgit_comment TYPE zif_abapgit_definitions=>ty_comment, "tsa4c_abapgit_comment,
+             abapgit_comment TYPE zif_abapgit_git_definitions=>ty_comment, "tsa4c_abapgit_comment,
              credentials     TYPE ty_credentials, "tsa4c_abapgit_credentials,
            END OF ty_push_request.
 

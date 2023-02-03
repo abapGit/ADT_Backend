@@ -41,12 +41,9 @@
     "ambiguous_statement": true,
     "avoid_use": {
       "define": true,
-      "endselect": true,
-      "execSQL": true,
-      "kernelCall": true,
-      "communication": true,
       "statics": true,
-      "systemCall": true,
+      "testSeams": true,
+      "describeLines": true,
       "defaultKey": false,
       "break": true
     },
@@ -56,7 +53,6 @@
     "check_comments": false,
     "check_ddic": true,
     "check_include": true,
-    "check_no_handler_pragma": true,
     "check_syntax": true,
     "check_text_elements": true,
     "check_transformation_exists": true,
@@ -71,7 +67,6 @@
     "implement_methods": false,
     "in_statement_indentation": false,
     "keep_single_parameter_on_one_line": true,
-    "local_testclass_location": true,
     "main_file_contents": true,
     "newline_between_methods": false,
     "no_public_attributes": false,
@@ -115,6 +110,7 @@
       "ignoreExceptions": true,
       "alignTryCatch": false,
       "globalClassSkipFirst": false,
+      "selectionScreenBlockIndentation": false,
       "ignoreGlobalClassDefinition": false,
       "ignoreGlobalInterface": false
     },
@@ -137,6 +133,7 @@
     "method_length": {
       "errorWhenEmpty": false,
       "ignoreTestClasses": false,
+      "checkForms": true,
       "statements": 100
     },
     "method_parameter_names": {
@@ -177,19 +174,7 @@
       "shlp": "^Z",
       "xslt": "^Z"
     },
-    "obsolete_statement": {
-      "setExtended": true,
-      "occurs": true,
-      "withHeaderLine": true,
-      "refresh": true,
-      "compute": true,
-      "add": true,
-      "subtract": true,
-      "multiply": true,
-      "move": true,
-      "divide": true,
-      "requested": true
-    },
+    "obsolete_statement": true,
     "parser_error": true,
     "sequential_blank": {
       "lines": 4
