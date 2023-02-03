@@ -15,7 +15,7 @@ CLASS zcl_abapgit_res_repo_info_ext DEFINITION
     TYPES:
       BEGIN OF ty_response_data,
         access_mode TYPE string,
-        branches    TYPE zif_abapgit_definitions=>ty_git_branch_list_tt,
+        branches    TYPE zif_abapgit_git_definitions=>ty_git_branch_list_tt,
       END OF ty_response_data.
 
     CONSTANTS co_content_type_request_v1  TYPE string
