@@ -91,8 +91,7 @@ CLASS zcl_abapgit_http_adt IMPLEMENTATION.
     " Disable internal auth dialog (due to its unclarity)
     li_client->propertytype_logon_popup = if_http_client=>co_disabled.
 
-    zcl_abapgit_login_manager=>load( iv_uri    = iv_url
-                                     ii_client = li_client ).
+    zcl_abapgit_login_manager=>load( iv_url ).
 
     zcl_abapgit_exit=>get_instance( )->http_client( ii_client = li_client iv_url = iv_url ).
 
