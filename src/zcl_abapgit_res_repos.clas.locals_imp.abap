@@ -26,7 +26,7 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
       MESSAGE e004(za4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
       zcx_abapgit_exception=>raise_t100( ).
     ELSEIF ls_e070-as4user NE sy-uname.
-      MESSAGE e005(za4c_agit_adt) WITH iv_transport_request INTO lv_error_message.
+      MESSAGE e005(za4c_agit_adt) WITH iv_transport_request sy-uname INTO lv_error_message.
       zcx_abapgit_exception=>raise_t100( ).
     ENDIF.
 
@@ -45,7 +45,7 @@ CLASS lcl_abapgit_provider IMPLEMENTATION.
 
     "Set the default transport request
     IF is_request_data-transportrequest IS NOT INITIAL.
-      zcl_abapgit_default_transport=>get_instance( )->set( CONV #( is_request_data-transportrequest ) ).
+      zcl_abapgit_factory=>get_default_transport( )->set( CONV #( is_request_data-transportrequest ) ).
     ENDIF.
 
     "Create online repo
