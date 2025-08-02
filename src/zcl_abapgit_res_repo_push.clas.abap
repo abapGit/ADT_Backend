@@ -16,7 +16,7 @@ CLASS zcl_abapgit_res_repo_push DEFINITION PUBLIC INHERITING FROM cl_adt_rest_re
     TYPES:
       BEGIN OF ty_repo_w_links.
         INCLUDE TYPE zif_abapgit_persistence=>ty_repo.
-    TYPES:   links TYPE if_atom_types=>link_t.
+    TYPES: links TYPE if_atom_types=>link_t.
     TYPES: END OF ty_repo_w_links .
     TYPES:
       tt_repo_w_links TYPE STANDARD TABLE OF ty_repo_w_links WITH DEFAULT KEY .
@@ -54,7 +54,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_ABAPGIT_RES_REPO_PUSH IMPLEMENTATION.
+CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
 
 
   METHOD post.
@@ -124,7 +124,9 @@ CLASS ZCL_ABAPGIT_RES_REPO_PUSH IMPLEMENTATION.
         "ls_commit-body            = .
 
         CREATE OBJECT lo_stage.
-        ls_files = zcl_abapgit_factory=>get_stage_logic( )->get( lo_repo_online ).
+        ls_files = zcl_abapgit_stage_logic=>get_stage_logic( )->get( lo_repo_online ).
+
+
 
 *------ Create new log in history table before starting batch processing
         " lo_log_factory = zcl_abapgit_app_log_factory=>get_instance( ).
@@ -164,7 +166,7 @@ CLASS ZCL_ABAPGIT_RES_REPO_PUSH IMPLEMENTATION.
 
 *------ Trigger commit
         zcl_abapgit_services_git=>commit( is_commit   = ls_commit
-                                         io_repo     = lo_repo_online
+                                         ii_repo_online     = lo_repo_online
                                          io_stage    = lo_stage ).
 
 *-------- Determine Log status

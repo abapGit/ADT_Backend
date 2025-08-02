@@ -113,7 +113,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
         lo_repo ?= li_repo.
         CREATE OBJECT lo_repo_content
           EXPORTING
-            io_repo = lo_repo.
+            ii_repo = lo_repo.
 
         DATA(lt_repo_items) = lo_repo_content->list( iv_path         = '/'
                                                      iv_by_folders   = abap_false
@@ -166,15 +166,16 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
           ENDIF.
         ENDLOOP.
 *------ Author and Committer details
-        lo_user = zcl_abapgit_persistence_user=>get_instance( ).
-
+        lo_user = zcl_abapgit_persist_factory=>get_user(  ).
+.
         DATA(lv_user) = lo_user->get_repo_git_user_name( lo_repo_online->get_url( ) ).
         IF lv_user IS INITIAL.
           lv_user  = lo_user->get_default_git_user_name( ).
         ENDIF.
         IF lv_user IS INITIAL.
           " get default from user master record
-          lv_user = zcl_abapgit_user_record=>get_instance( sy-uname )->get_name( ).
+          lv_user = zcl_abapgit_env_factory=>get_user_record( )->get_name( sy-uname ).
+
         ENDIF.
 
         DATA(lv_email) = lo_user->get_repo_git_user_email( lo_repo_online->get_url( ) ).
@@ -183,7 +184,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
         ENDIF.
         IF lv_email IS INITIAL.
           " get default from user master record
-          lv_email = zcl_abapgit_user_record=>get_instance( sy-uname )->get_email( ).
+          lv_email = zcl_abapgit_env_factory=>get_user_record(  )->get_email( sy-uname ).
         ENDIF.
 
         ls_response_data-abapgit_comment-author-name     = lv_user.
