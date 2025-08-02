@@ -168,7 +168,7 @@ CLASS zcl_abapgit_res_repo_push IMPLEMENTATION.
         zcl_abapgit_services_git=>commit( is_commit   = ls_commit
                                          ii_repo_online     = lo_repo_online
                                          io_stage    = lo_stage ).
-
+*------ Push changes to remote repository
 *-------- Determine Log status
         " DATA(lv_run_status) = lo_log->if_abapgit_log~get_status( ).
         " CASE lv_run_status.
