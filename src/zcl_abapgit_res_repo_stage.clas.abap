@@ -184,7 +184,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
         ENDIF.
         IF lv_email IS INITIAL.
           " get default from user master record
-          lv_email = zcl_abapgit_env_factory=>get_user_record(  )->get_email( sy-uname ).
+          lv_email = zcl_abapgit_env_factory=>get_user_record( )->get_email( sy-uname ).
         ENDIF.
 
         ls_response_data-abapgit_comment-author-name     = lv_user.
