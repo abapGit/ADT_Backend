@@ -167,7 +167,7 @@ CLASS zcl_abapgit_res_repo_stage IMPLEMENTATION.
         ENDLOOP.
 *------ Author and Committer details
         lo_user = zcl_abapgit_persist_factory=>get_user( ).
-.
+
         DATA(lv_user) = lo_user->get_repo_git_user_name( lo_repo_online->get_url( ) ).
         IF lv_user IS INITIAL.
           lv_user  = lo_user->get_default_git_user_name( ).
