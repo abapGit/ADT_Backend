@@ -19,24 +19,39 @@ CREATE PUBLIC .
       EXPORTING ev_http_status   TYPE i
                 ev_is_auth_issue TYPE abap_bool.
 
-    METHODS check_connection IMPORTING
-                               io_repository TYPE REF TO zcl_abapgit_repo_online
-                               iv_service    TYPE string
-                             RAISING
-                               zcx_abapgit_exception.
+    METHODS check_connection
+        IMPORTING io_repository TYPE REF TO zcl_abapgit_repo_online
+                  iv_service    TYPE string
+        RAISING   zcx_abapgit_exception.
 
     METHODS get_repository_service
       RETURNING VALUE(ro_repo_service) TYPE REF TO zif_abapgit_repo_srv.
+
+    CLASS-METHODS get_request_uri
+      IMPORTING iv_url        TYPE string
+                iv_service    TYPE string
+      RETURNING VALUE(rv_uri) TYPE string
+      RAISING   zcx_abapgit_exception.
 
 ENDCLASS.
 
 
 CLASS zcl_abapgit_res_repo_checks IMPLEMENTATION.
 
+  METHOD get_request_uri.
+    rv_uri = |{ zcl_abapgit_url=>path_name( iv_url ) }/info/refs?service=git-{ iv_service }-pack|.
+  ENDMETHOD.
+
   METHOD check_connection.
-    zcl_abapgit_http=>create_by_url(
-        iv_url     = io_repository->get_url( )
-        iv_service = iv_service ).
+    DATA lt_headers TYPE zcl_abapgit_http=>ty_headers.
+    DATA ls_header  LIKE LINE OF lt_headers.
+
+    ls_header-key   = '~request_uri'.
+    ls_header-value = get_request_uri( iv_url     = io_repository->get_url( )
+                                       iv_service = iv_service ).
+    APPEND ls_header TO lt_headers.
+    zcl_abapgit_http=>create_by_url( iv_url     = io_repository->get_url( )
+                                     it_headers = lt_headers ).
   ENDMETHOD.
 
   METHOD is_authorization_issue.
